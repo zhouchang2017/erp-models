@@ -12,8 +12,20 @@
         "dimsav/laravel-translatable": "^9.2",
         "kalnoy/nestedset": "^4.3",
         "moneyphp/money": "^3.1",
-        "spatie/laravel-medialibrary": "^7.0.0"
+        "spatie/laravel-medialibrary": "^7.0.0",
+        "vyuldashev/nova-permission": "^1.4",
+        "zgldh/qiniu-laravel-storage": "^0.10.0"
     },
+    "repositories":[
+        {
+            "type": "path",
+            "url": "./nova-components/BelongsToManyOption"
+        },
+        {
+            "type": "path",
+            "url": "./nova-components/BelongsToManyAttribute"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Chang\\Erp\\": "src/"

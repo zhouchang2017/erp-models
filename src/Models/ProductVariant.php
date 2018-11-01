@@ -2,8 +2,7 @@
 
 namespace Chang\Erp\Models;
 
-use App\Modules\ProductProvider\Models\ProductProvider;
-use App\Modules\ProductProvider\Models\VariantProvider;
+//use ProductProvider;
 use Dimsav\Translatable\Translatable;
 
 class ProductVariant extends Model

@@ -2,14 +2,14 @@
 
 namespace Chang\Erp\Models;
 
-use Chang\Erp\Media\MediaAble;
-use Chang\Erp\Media\ProductImageTrait;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Dimsav\Translatable\Translatable;
 
 
-class Product extends Model implements MediaAble
+class Product extends Model implements HasMedia
 {
-    use Translatable, ProductImageTrait;
+    use Translatable, HasMediaTrait;
 
     protected $connection = 'dealpaw';
 
@@ -20,6 +20,12 @@ class Product extends Model implements MediaAble
     public $translatedAttributes = ['name','short_description','description','slug','meta_title','meta_keywords','meta_description'];
 
     protected $fillable = ['code', 'taxon_id', 'enabled'];
+
+    public function registerMediaCollections()
+    {
+        $this->addMediaCollection('main')->singleFile();
+        $this->addMediaCollection('product_image');
+    }
 
 
     public function relatedProducts()
