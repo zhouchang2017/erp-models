@@ -16,9 +16,11 @@ use Money\Formatter\IntlMoneyFormatter;
 use Money\Money;
 use Money\Parser\DecimalMoneyParser;
 
-trait MoneyFormatAble
+trait MoneyFormatableTrait
 {
     protected $currency = 'USD';
+
+    protected $priceField = 'price';
 
     /**
      * @return string
@@ -30,7 +32,7 @@ trait MoneyFormatAble
 
     /**
      * @param string $currency
-     * @return MoneyFormatAble
+     * @return MoneyFormatableTrait
      */
     public function setCurrency(string $currency = null)
     {
@@ -66,5 +68,15 @@ trait MoneyFormatAble
         $money = $moneyParser->parse($value, $this->getCurrency());
 
         return $money->getAmount();
+    }
+
+    public function getPriceAttribute($value)
+    {
+        return $this->displayCurrencyUsing($value);
+    }
+
+    public function setPriceAttribute($value)
+    {
+        $this->attributes[$this->priceField] = $this->saveCurrencyUsing($value);
     }
 }

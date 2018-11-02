@@ -2,11 +2,11 @@
 
 namespace Chang\Erp\Models;
 
-use Chang\Erp\Traits\MoneyFormatAble;
+use Chang\Erp\Traits\MoneyFormatableTrait;
 
 class ProductPrice extends Model
 {
-    use MoneyFormatAble;
+    use MoneyFormatableTrait;
 
     protected $connection = 'mysql';
 

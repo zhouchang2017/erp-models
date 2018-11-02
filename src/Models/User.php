@@ -2,14 +2,16 @@
 
 namespace Chang\Erp\Models;
 
+use Chang\Erp\Contracts\Incomeable;
+use Chang\Erp\Traits\IncomeableTrait;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements Incomeable
 {
-    use Notifiable, HasRoles;
+    use Notifiable, HasRoles, IncomeableTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -38,12 +40,12 @@ class User extends Authenticatable
 
     public function variants()
     {
-        return $this->hasMany(VariantProvider::class, 'user_id', 'product_variant_id');
+        return $this->hasMany(SupplierVariant::class);
     }
 
-    public function provider()
+    public function supplier()
     {
-        return $this->hasOne(ProductProvider::class);
+        return $this->hasOne(Supplier::class);
     }
 
 //    public function productVariants()

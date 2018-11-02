@@ -3,11 +3,11 @@
 namespace Chang\Erp\Models;
 
 
-use Chang\Erp\Traits\AddressTrait;
+use Chang\Erp\Traits\AddressableTrait;
 
 class Warehouse extends Model
 {
-    use AddressTrait;
+    use AddressableTrait;
 
     protected $fillable = ['name', 'type_id'];
 

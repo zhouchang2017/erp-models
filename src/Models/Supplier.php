@@ -2,13 +2,12 @@
 
 namespace Chang\Erp\Models;
 
-use Chang\Erp\Traits\AddressTrait;
+use Chang\Erp\Traits\AddressableTrait;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-
-class ProductProvider extends Model implements HasMedia
+class Supplier extends Model implements HasMedia
 {
-    use AddressTrait, HasMediaTrait;
+    use AddressableTrait, HasMediaTrait;
 
     protected $connection = 'mysql';
 
@@ -35,7 +34,7 @@ class ProductProvider extends Model implements HasMedia
     public function registerMediaCollections()
     {
         $this->addMediaCollection('main')->singleFile();
-        $this->addMediaCollection('product_provider_image');
+        $this->addMediaCollection('supplier_image');
     }
 
     public function user()
@@ -43,4 +42,8 @@ class ProductProvider extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
+    public function variants()
+    {
+        return $this->hasMany(SupplierVariant::class);
+    }
 }

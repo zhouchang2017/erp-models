@@ -5,7 +5,7 @@ namespace Chang\Erp\Traits;
 
 use Chang\Erp\Models\Address;
 
-trait AddressTrait
+trait AddressableTrait
 {
 
     /**

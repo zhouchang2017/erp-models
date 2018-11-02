@@ -56,9 +56,9 @@ class ProductVariant extends Model
     }
 
 
-    public function provider()
+    public function supplier()
     {
-        return $this->hasOne(VariantProvider::class);
+        return $this->hasOne(SupplierVariant::class,'product_variant_id');
     }
 
     public function hasPrice()

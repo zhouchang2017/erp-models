@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 
 abstract class Model extends BaseModel
 {
+    protected $connection = 'mysql';
 
     public function setPositionAttribute($value)
     {
