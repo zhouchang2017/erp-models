@@ -3,9 +3,10 @@
 namespace Chang\Erp\Models;
 
 
+use Chang\Erp\Contracts\Addressable;
 use Chang\Erp\Traits\AddressableTrait;
 
-class Warehouse extends Model
+class Warehouse extends Model implements Addressable
 {
     use AddressableTrait;
 
@@ -14,6 +15,13 @@ class Warehouse extends Model
     protected $fieldSearchable = [
         'id',
         'name',
+        'enabled',
+        'has_verify',
+    ];
+
+    protected $casts = [
+        'enabled' => 'boolean',
+        'has_verify' => 'boolean',
     ];
 
     /**

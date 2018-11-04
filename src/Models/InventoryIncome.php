@@ -8,13 +8,16 @@ use Chang\Erp\Contracts\Commentable;
 use Chang\Erp\Contracts\Trackable;
 use Chang\Erp\Observers\InventoryIncomeObserver;
 use Chang\Erp\Traits\CommentableTrait;
-use Chang\Erp\Traits\InventoryCalculationTrait;
+use Chang\Erp\Traits\UpdateInventoryTrait;
 use Chang\Erp\Traits\MoneyFormatableTrait;
 use Chang\Erp\Traits\TrackableTrait;
 
-class InventoryIncome extends Model implements Trackable,Commentable
+class InventoryIncome extends Model implements Trackable, Commentable
 {
-    use TrackableTrait, MoneyFormatableTrait, InventoryCalculationTrait,CommentableTrait;
+    use TrackableTrait,
+        MoneyFormatableTrait,
+        UpdateInventoryTrait,
+        CommentableTrait;
 
     const UN_COMMIT = 0; //未提交
     const PADDING = 1;  //待审核
@@ -38,6 +41,7 @@ class InventoryIncome extends Model implements Trackable,Commentable
         'pcs',
         'price',
         'status',
+        'warehouse_id',
     ];
 
     protected $casts = [

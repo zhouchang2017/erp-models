@@ -2,6 +2,7 @@
 
 namespace Chang\Erp;
 
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Spatie\MediaLibrary\Filesystem\Filesystem;
 
@@ -20,5 +21,7 @@ class ErpServiceProvider extends ServiceProvider
         $this->app->bind(Filesystem::class, \Chang\Erp\Media\Filesystem\Filesystem::class);
 
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations/');
+
+
     }
 }

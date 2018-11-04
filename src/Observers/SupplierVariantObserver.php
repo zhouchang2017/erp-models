@@ -12,8 +12,5 @@ use Chang\Erp\Models\SupplierVariant;
 
 class SupplierVariantObserver
 {
-    public function creating(SupplierVariant $variant)
-    {
-        $variant->supplier_id = $variant->getSupplierId();
-    }
+
 }

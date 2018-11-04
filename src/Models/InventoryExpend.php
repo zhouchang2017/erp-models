@@ -4,12 +4,19 @@ namespace Chang\Erp\Models;
 
 
 // 出库
+use Chang\Erp\Contracts\Commentable;
 use Chang\Erp\Contracts\Trackable;
+use Chang\Erp\Traits\CommentableTrait;
+use Chang\Erp\Traits\UpdateInventoryTrait;
+use Chang\Erp\Traits\MoneyFormatableTrait;
 use Chang\Erp\Traits\TrackableTrait;
 
-class InventoryExpend extends Model implements Trackable
+class InventoryExpend extends Model implements Trackable, Commentable
 {
-    use TrackableTrait;
+    use TrackableTrait,
+        CommentableTrait,
+        MoneyFormatableTrait,
+        UpdateInventoryTrait;
 
     const UN_COMMIT = 0; //未提交
     const PADDING = 1;  //待审核
@@ -22,6 +29,7 @@ class InventoryExpend extends Model implements Trackable
         'pcs',
         'price',
         'status',
+        'warehouse_id',
     ];
 
     protected $casts = [

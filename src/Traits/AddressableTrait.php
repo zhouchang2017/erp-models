@@ -4,26 +4,30 @@ namespace Chang\Erp\Traits;
 
 
 use Chang\Erp\Models\Address;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
+/**
+ * Trait AddressableTrait
+ * @package Chang\Erp\Traits
+ */
 trait AddressableTrait
 {
 
     /**
-     * @return string
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function getAddressMethod(): string
-    {
-        return 'addresses';
-    }
-
-    public function addresses()
+    public function addresses(): MorphMany
     {
         return $this->morphMany(Address::class, 'addressable');
     }
 
-    public function address()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     */
+    public function address(): MorphOne
     {
-        return $this->morphOne(Address::class,'addressable');
+        return $this->morphOne(Address::class, 'addressable');
     }
 
 

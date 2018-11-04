@@ -17,7 +17,6 @@ class CreateSupplierVariantsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('product_variant_id');
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('supplier_id');
             $table->unsignedInteger('price')->default(0)->comment('报价');
             $table->timestamps();
         });

@@ -13,5 +13,11 @@ class ShipmentTrack extends Model
         'logistic_id',
         'tracking_number',
         'price',
+        'description',
     ];
+
+    public function trackable()
+    {
+        return $this->morphTo();
+    }
 }

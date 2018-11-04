@@ -28,10 +28,16 @@ class SupplierVariant extends Model
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function supplier()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
 
     public function getSupplierId()
     {

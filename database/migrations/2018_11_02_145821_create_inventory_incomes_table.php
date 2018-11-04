@@ -20,6 +20,7 @@ class CreateInventoryIncomesTable extends Migration
             $table->unsignedInteger('price')->default(0)->comment('总计金额');
             $table->unsignedInteger('status')->default(0);
             $table->morphs('incomeable');
+            $table->unsignedInteger('warehouse_id')->comment('仓库id');
             $table->timestamp('confirmed_at')->nullable()->comment('审核通过时间');
             $table->timestamp('shipped_at')->nullable()->comment('发货时间');
             $table->timestamp('completed_at')->nullable()->comment('入库时间');

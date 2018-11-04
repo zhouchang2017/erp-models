@@ -5,6 +5,7 @@ namespace Chang\Erp\Models;
 use Chang\Erp\Traits\AddressableTrait;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+
 class Supplier extends Model implements HasMedia
 {
     use AddressableTrait, HasMediaTrait;
@@ -44,6 +45,6 @@ class Supplier extends Model implements HasMedia
 
     public function variants()
     {
-        return $this->hasMany(SupplierVariant::class);
+        return $this->hasMany(SupplierVariant::class, 'product_variant_id');
     }
 }

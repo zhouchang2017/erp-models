@@ -25,7 +25,7 @@ class User extends Authenticatable implements Incomeable
     ];
 
     protected $casts = [
-        'is_provider' => 'boolean',
+        'is_supplier' => 'boolean',
     ];
 
     /**

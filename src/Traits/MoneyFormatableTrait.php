@@ -77,6 +77,6 @@ trait MoneyFormatableTrait
 
     public function setPriceAttribute($value)
     {
-        $this->attributes[$this->priceField] = $this->saveCurrencyUsing($value);
+        $this->attributes[$this->priceField] = $this->saveCurrencyUsing($value === 0 ? '0.00' : $value);
     }
 }

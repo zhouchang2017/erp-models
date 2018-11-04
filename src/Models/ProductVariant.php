@@ -58,7 +58,17 @@ class ProductVariant extends Model
 
     public function supplier()
     {
-        return $this->hasOne(SupplierVariant::class,'product_variant_id');
+        return $this->hasOne(SupplierVariant::class, 'user_id');
+    }
+
+    public function user()
+    {
+        return $this->hasOne(SupplierVariant::class, 'user_id');
+    }
+
+    public function supplierVariant()
+    {
+        return $this->hasOne(SupplierVariant::class, 'product_variant_id');
     }
 
     public function hasPrice()

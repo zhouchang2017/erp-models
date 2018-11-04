@@ -17,6 +17,8 @@ class CreateWarehousesTable extends Migration
             $table->increments('id');
             $table->string('name')->comment('仓库名称');
             $table->unsignedInteger('type_id')->comment('仓库类型');
+            $table->boolean('enabled')->default(true)->comment('是否启用');
+            $table->boolean('has_verify')->default(true)->comment('进出是否需要审核');
             $table->timestamps();
         });
     }
