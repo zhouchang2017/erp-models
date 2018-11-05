@@ -26,6 +26,7 @@ class SendShipmentNotification
      */
     public function handle(InventoryIncomeShipped $event)
     {
-        //
+        //TODO 发货消息通知
+        info('send-notification-handle');
     }
 }

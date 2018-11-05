@@ -26,6 +26,6 @@ class InventoryIncomeStatusToShipped
      */
     public function handle(InventoryIncomeShipped $event)
     {
-        //
+        info('to-shipped-handle');
     }
 }

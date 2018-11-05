@@ -15,6 +15,11 @@ class InventoryIncomeObserver
     public function saving(InventoryIncome $income)
     {
         $this->autoCalcItems($income);
+
+        // 标记审核时间
+        if ($this->status === InventoryIncome::UN_SHIP) {
+            $this->updateConfirmedAt($income);
+        }
     }
 
 
@@ -26,5 +31,10 @@ class InventoryIncomeObserver
     {
         $income->price = $income->calcTotalPrice();
         $income->pcs = $income->calcTotalPcs();
+    }
+
+    protected function updateConfirmedAt($income)
+    {
+        $income->confirmed_at = now();
     }
 }
