@@ -7,7 +7,6 @@
  */
 
 namespace Chang\Erp\Observers;
-
 use Chang\Erp\Models\InventoryIncome;
 
 class InventoryIncomeObserver
@@ -17,11 +16,11 @@ class InventoryIncomeObserver
         $this->autoCalcItems($income);
 
         // 标记审核时间
-        if ($this->status === InventoryIncome::UN_SHIP) {
+        if ($income->status === InventoryIncome::UN_SHIP) {
             $this->updateConfirmedAt($income);
         }
-    }
 
+    }
 
     /**
      * 计算items 价格|数量

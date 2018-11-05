@@ -20,4 +20,9 @@ class ShipmentTrack extends Model
     {
         return $this->morphTo();
     }
+
+    public function logistic()
+    {
+        return $this->belongsTo(Logistic::class);
+    }
 }

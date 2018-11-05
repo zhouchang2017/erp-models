@@ -42,12 +42,14 @@ class InventoryIncome extends Model implements Trackable, Commentable
         'price',
         'status',
         'warehouse_id',
+        'has_shipment',
     ];
 
     protected $casts = [
         'confirmed_at' => 'datetime', // 审核通过时间
         'shipped_at' => 'datetime',   // $this->needlessShipment() 无需物流
         'completed_at' => 'datetime',
+        'has_shipment' => 'boolean',
     ];
 
     protected static function boot()

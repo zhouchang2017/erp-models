@@ -18,13 +18,14 @@ trait TrackableTrait
         return $this->morphMany(ShipmentTrack::class, 'trackable');
     }
 
+    public function track()
+    {
+        return $this->morphOne(ShipmentTrack::class, 'trackable');
+    }
+
     public function hasTracks()
     {
         return $this->tracks()->count() > 0;
     }
-
-    public function needlessShipment()
-    {
-        return !is_null($this->shipped_at) && !$this->hasTracks();
-    }
+    
 }

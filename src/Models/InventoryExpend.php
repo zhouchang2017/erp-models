@@ -30,12 +30,14 @@ class InventoryExpend extends Model implements Trackable, Commentable
         'price',
         'status',
         'warehouse_id',
+        'has_shipment',
     ];
 
     protected $casts = [
         'confirmed_at' => 'datetime',
         'shipped_at' => 'datetime',
         'completed_at' => 'datetime',
+        'has_shipment' => 'boolean',
     ];
 
     public function items()

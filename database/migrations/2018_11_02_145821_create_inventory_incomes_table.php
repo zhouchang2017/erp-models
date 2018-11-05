@@ -24,6 +24,7 @@ class CreateInventoryIncomesTable extends Migration
             $table->timestamp('confirmed_at')->nullable()->comment('审核通过时间');
             $table->timestamp('shipped_at')->nullable()->comment('发货时间');
             $table->timestamp('completed_at')->nullable()->comment('入库时间');
+            $table->boolean('has_shipment')->default(true)->comment('是否需要物流');
             $table->timestamps();
         });
     }
