@@ -7,7 +7,6 @@ use Chang\Erp\Events\InventoryPut;
 
 class Inventory extends Model
 {
-
     protected $fillable = [
         'warehouse_id',
         'product_id',
@@ -57,7 +56,7 @@ class Inventory extends Model
             return $stock ?
                 $stock->increment('stock', $inventoryItem['stock']) :
                 static::create($inventoryItem);
-        })->tap(function($inventory) use ($income){
+        })->tap(function ($inventory) use ($income) {
             event(new InventoryPut($income));
         });
     }

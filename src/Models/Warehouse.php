@@ -49,14 +49,22 @@ class Warehouse extends Model implements Addressable
 
     public function variants()
     {
-        return $this->hasManyThrough(
-            ProductVariant::class,
-            Inventory::class,
-            'warehouse_id',
-            'id',
-            'id',
-            'product_variant_id'
-        );
+//        return $this->hasManyThrough(
+//            ProductVariant::class,
+//            Inventory::class,
+//            'warehouse_id',
+//            'id',
+//            'id',
+//            'product_variant_id'
+//        );
+        return $this->inventories()->with([
+            'variant'
+        ]);
+    }
+
+    public function getVariantsAttribute()
+    {
+        return $this->variants()->get();
     }
 
 }
