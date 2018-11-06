@@ -6,7 +6,7 @@ use Chang\Erp\Events\Shipped;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendShipmentNotification
+class ChangeStatusToShipped
 {
     /**
      * Create the event listener.
@@ -26,7 +26,7 @@ class SendShipmentNotification
      */
     public function handle(Shipped $event)
     {
-        //TODO 发货消息通知
-        info('send-notification-handle');
+        $event->model->statusToShipped();
+        info('to-shipped-handle');
     }
 }

@@ -40,6 +40,22 @@ class InventoryExpend extends Model implements Trackable, Commentable
         'has_shipment' => 'boolean',
     ];
 
+    public static function selectOptions()
+    {
+        return [
+            self::UN_COMMIT => '保存',
+            self::PADDING => '提交',
+            self::UN_SHIP => '等待发货',
+            self::SHIPPED => '已发货',
+            self::COMPLETED => '已完成',
+        ];
+    }
+
+    public function expendable()
+    {
+       return $this->morphTo();
+    }
+
     public function items()
     {
         return $this->hasMany(InventoryExpendItem::class);

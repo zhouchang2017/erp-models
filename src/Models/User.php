@@ -2,16 +2,18 @@
 
 namespace Chang\Erp\Models;
 
+use Chang\Erp\Contracts\Expendable;
 use Chang\Erp\Contracts\Incomeable;
+use Chang\Erp\Traits\ExpendableTrait;
 use Chang\Erp\Traits\IncomeableTrait;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements Incomeable
+class User extends Authenticatable implements Incomeable, Expendable
 {
-    use Notifiable, HasRoles, IncomeableTrait;
+    use Notifiable, HasRoles, IncomeableTrait, ExpendableTrait;
 
     /**
      * The attributes that are mass assignable.

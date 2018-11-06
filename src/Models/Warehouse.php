@@ -42,4 +42,21 @@ class Warehouse extends Model implements Addressable
         return $this->belongsTo(WarehouseType::class, 'type_id');
     }
 
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class);
+    }
+
+    public function variants()
+    {
+        return $this->hasManyThrough(
+            ProductVariant::class,
+            Inventory::class,
+            'warehouse_id',
+            'id',
+            'id',
+            'product_variant_id'
+        );
+    }
+
 }

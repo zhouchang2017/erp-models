@@ -2,11 +2,11 @@
 
 namespace Chang\Erp\Listeners;
 
-use Chang\Erp\Events\InventoryIncomeShipped;
+use Chang\Erp\Events\InventoryPut;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class InventoryIncomeStatusToShipped
+class ChangeStatusToCompleted
 {
     /**
      * Create the event listener.
@@ -21,11 +21,12 @@ class InventoryIncomeStatusToShipped
     /**
      * Handle the event.
      *
-     * @param  InventoryIncomeShipped  $event
+     * @param  InventoryPut  $event
      * @return void
      */
-    public function handle(InventoryIncomeShipped $event)
+    public function handle(InventoryPut $event)
     {
-        info('to-shipped-handle');
+        $event->model->statusToCompleted();
+        info('to-completed-handle');
     }
 }

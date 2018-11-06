@@ -12,4 +12,18 @@ namespace Chang\Erp\Contracts;
 interface Trackable
 {
     public function tracks();
+
+    public function statusToShipped();
+
+    public function getStatusField(): string;
+
+    public function statusWhenShippedValue(): int;
+
+    public function getShippedAtField(): string;
+
+    public function statusWhenCompletedValue(): int;
+
+    public function getCompletedAtField(): string;
+
+    public function statusToCompleted();
 }

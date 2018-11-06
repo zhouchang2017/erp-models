@@ -13,6 +13,16 @@ use Chang\Erp\Models\ShipmentTrack;
 
 trait TrackableTrait
 {
+    protected $statusField = 'status';
+
+    protected $shippedValue = 3;
+
+    protected $shippedAtField = 'shipped_at';
+
+    protected $completedValue = 4;
+
+    protected $completedAtField = 'completed_at';
+
     public function tracks()
     {
         return $this->morphMany(ShipmentTrack::class, 'trackable');
@@ -27,5 +37,51 @@ trait TrackableTrait
     {
         return $this->tracks()->count() > 0;
     }
-    
+
+    public function statusWhenShippedValue(): int
+    {
+        return $this->shippedValue;
+    }
+
+    public function getStatusField(): string
+    {
+        return $this->statusField;
+    }
+
+    public function getShippedAtField(): string
+    {
+        return $this->shippedAtField;
+    }
+
+    public function statusWhenCompletedValue(): int
+    {
+        return $this->completedValue;
+    }
+
+    public function getCompletedAtField(): string
+    {
+        return $this->completedAtField;
+    }
+
+    /**
+     * 改变发货状态，标记为已发货，写入发货时间
+     */
+    public function statusToShipped()
+    {
+        if ($this->{$this->getStatusField()} < $this->statusWhenShippedValue()) {
+            $this->{$this->getStatusField()} = $this->statusWhenShippedValue();
+            $this->{$this->getShippedAtField()} = now();
+            $this->save();
+        }
+    }
+
+    public function statusToCompleted()
+    {
+        if ((int)$this->{$this->getStatusField()} === $this->statusWhenShippedValue()) {
+            $this->{$this->getStatusField()} = $this->statusWhenCompletedValue();
+            $this->{$this->getCompletedAtField()} = now();
+            $this->save();
+        }
+    }
+
 }

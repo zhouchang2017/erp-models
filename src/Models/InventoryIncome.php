@@ -11,7 +11,12 @@ use Chang\Erp\Traits\CommentableTrait;
 use Chang\Erp\Traits\UpdateInventoryTrait;
 use Chang\Erp\Traits\MoneyFormatableTrait;
 use Chang\Erp\Traits\TrackableTrait;
+use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * @property Collection items
+ * @property Warehouse warehouse
+ */
 class InventoryIncome extends Model implements Trackable, Commentable
 {
     use TrackableTrait,
@@ -68,5 +73,11 @@ class InventoryIncome extends Model implements Trackable, Commentable
     {
         return $this->hasMany(InventoryIncomeItem::class);
     }
+
+    public function completed()
+    {
+        return Inventory::put($this);
+    }
+
 
 }
