@@ -3,7 +3,9 @@
 namespace Chang\Erp\Models;
 
 
+use Chang\Erp\Contracts\Inventoriable;
 use Chang\Erp\Events\InventoryPut;
+use Chang\Erp\Events\InventoryTake;
 
 class Inventory extends Model
 {
@@ -31,7 +33,7 @@ class Inventory extends Model
 
     public function supplier()
     {
-        return $this->hasOne(SupplierVariant::class,'product_variant_id','product_variant_id');
+        return $this->hasOne(SupplierVariant::class, 'product_variant_id', 'product_variant_id');
     }
 
     public function scopeFindWarehouseVariants($query, $warehouseId, $variantId, $productId = null)
@@ -44,31 +46,47 @@ class Inventory extends Model
         });
     }
 
-    public static function put(InventoryIncome $income)
+    /**
+     * 入库
+     * @param Inventoriable $inventoriable
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
+     */
+    public static function put(Inventoriable $inventoriable)
     {
-        return $income->items->map(function ($item) use ($income) {
+        return $inventoriable->items->map(function ($item) use ($inventoriable) {
             $inventoryItem = [
-                'warehouse_id' => $income->warehouse_id,
+                'warehouse_id' => $inventoriable->toWarehouseId(),
                 'product_id' => $item->product_id,
                 'product_variant_id' => $item->product_variant_id,
                 'stock' => $item->pcs,
             ];
-            $stock = static::findWarehouseVariants(
+            $inventory = static::findWarehouseVariants(
                 $inventoryItem['warehouse_id'],
                 $inventoryItem['product_variant_id']
             )->first();
 
-            return $stock ?
-                $stock->increment('stock', $inventoryItem['stock']) :
+            return $inventory ?
+                $inventory->increment('stock', $inventoryItem['stock']) :
                 static::create($inventoryItem);
-        })->tap(function ($inventory) use ($income) {
-            event(new InventoryPut($income));
+        })->tap(function () use ($inventoriable) {
+            event(new InventoryPut($inventoriable));
         });
     }
-    
-    public static function take(InventoryExpend $expend){
-        $expend->items->each(function ($item) use ($expend) {
-            $expend->warehouse->inventories()->where('product_variant_id', 32)->first()->decrement('stock', $item->pcs);
+
+    /**
+     * 出库
+     * @param Inventoriable $inventoriable
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
+     */
+    public static function take(Inventoriable $inventoriable)
+    {
+        return $inventoriable->items->map(function ($item) use ($inventoriable) {
+            return tap($inventoriable->warehouse->inventories()->where('product_variant_id', 32)->first(),
+                function ($inventory) use ($item) {
+                    $inventory->decrement('stock', $item->pcs);
+                });
+        })->tap(function () use ($inventoriable) {
+            event(new InventoryTake($inventoriable));
         });
     }
 }

@@ -5,6 +5,7 @@ namespace Chang\Erp\Models;
 
 // 入库
 use Chang\Erp\Contracts\Commentable;
+use Chang\Erp\Contracts\Inventoriable;
 use Chang\Erp\Contracts\Trackable;
 use Chang\Erp\Observers\InventoryIncomeObserver;
 use Chang\Erp\Traits\CommentableTrait;
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Collection;
  * @property Collection items
  * @property Warehouse warehouse
  */
-class InventoryIncome extends Model implements Trackable, Commentable
+class InventoryIncome extends Model implements Trackable, Commentable, Inventoriable
 {
     use TrackableTrait,
         MoneyFormatableTrait,
@@ -84,4 +85,36 @@ class InventoryIncome extends Model implements Trackable, Commentable
         return $this->belongsTo(Warehouse::class, 'warehouse_id');
     }
 
+    public function customer()
+    {
+        return $this->warehouse();
+    }
+
+    public function producer()
+    {
+        return $this->incomeable();
+    }
+
+    public function toWarehouseId(): int
+    {
+        return (int)$this->warehouse_id;
+    }
+
+    public function formWarehouseId(): int
+    {
+        if ($this->incomeable instanceof Warehouse) {
+            return (int)$this->incomeable->id;
+        }
+        return 0;
+    }
+
+    public function decrementInventory()
+    {
+        Inventory::take($this);
+    }
+
+    public function incrementInventory()
+    {
+        Inventory::put($this);
+    }
 }

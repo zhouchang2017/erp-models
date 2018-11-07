@@ -39,7 +39,7 @@ class HandleInventoryController extends Controller
 
     public function completed($type, $resourceId)
     {
-        return $this->getModel($type, $resourceId)->completed();
+        return $this->getModel($type, $resourceId)->statusToCompleted();
     }
 
 }

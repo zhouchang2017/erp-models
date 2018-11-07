@@ -26,4 +26,6 @@ interface Trackable
     public function getCompletedAtField(): string;
 
     public function statusToCompleted();
+
+    public function isShipped(): bool;
 }

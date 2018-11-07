@@ -2,7 +2,7 @@
 
 namespace Chang\Erp\Events;
 
-use Chang\Erp\Contracts\Trackable;
+use Chang\Erp\Contracts\Inventoriable;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -20,9 +20,9 @@ class InventoryTake
     /**
      * Create a new event instance.
      *
-     * @param Trackable $model
+     * @param Inventoriable $model
      */
-    public function __construct(Trackable $model)
+    public function __construct(Inventoriable $model)
     {
         $this->model = $model;
     }

@@ -75,6 +75,11 @@ trait TrackableTrait
         }
     }
 
+    public function isShipped(): bool
+    {
+        return !is_null($this->{$this->getShippedAtField()});
+    }
+
     /**
      * 改变完成状态，标记为已完成，写入完成时间
      */
@@ -85,6 +90,7 @@ trait TrackableTrait
             $this->{$this->getCompletedAtField()} = now();
             $this->save();
         }
+        return $this;
     }
 
 }

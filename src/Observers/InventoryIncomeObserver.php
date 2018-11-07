@@ -20,7 +20,14 @@ class InventoryIncomeObserver
         if ((int)$income->status === InventoryIncome::UN_SHIP) {
             $this->updateConfirmedAt($income);
         }
+    }
 
+    public function updated(InventoryIncome $income)
+    {
+        // 完成状态 更新库存
+        if ((int)$income->status === InventoryIncome::COMPLETED) {
+            $income->incrementInventory();
+        }
     }
 
     /**

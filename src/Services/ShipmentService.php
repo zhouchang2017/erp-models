@@ -10,7 +10,6 @@ namespace Chang\Erp\Services;
 
 use Chang\Erp\Contracts\Trackable;
 use Chang\Erp\Events\Shipped;
-use Chang\Erp\Models\ShipmentTrack;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -33,10 +32,6 @@ class ShipmentService
 
     public function fillAttributeFromRequest(Request $request)
     {
-        if ($request->has('has_shipment')) {
-            $this->model->update(['has_shipment' => $request->get('has_shipment')]);
-        }
-
         if ($request->has('tracks')) {
             $data = collect($request->input('tracks', []));
             // update updated tracks
@@ -56,8 +51,16 @@ class ShipmentService
                 return $this->model->tracks()->create($track);
             });
         }
-        event(new Shipped($this->model));
+
+        if ($request->has('has_shipment')) {
+            $this->model->update(['has_shipment' => $request->get('has_shipment')]);
+        }
+
+        if ( !$this->model->isShipped() && !$this->model->has_shipment || $this->model->hasTracks()) {
+            event(new Shipped($this->model));
+        }
     }
+
 
     protected function getOriginTracks(Collection $collection)
     {
