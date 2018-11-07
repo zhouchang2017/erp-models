@@ -4,11 +4,13 @@ namespace Chang\Erp\Models;
 
 
 use Chang\Erp\Contracts\Addressable;
+use Chang\Erp\Contracts\Expendable;
 use Chang\Erp\Traits\AddressableTrait;
+use Chang\Erp\Traits\ExpendableTrait;
 
-class Warehouse extends Model implements Addressable
+class Warehouse extends Model implements Addressable, Expendable
 {
-    use AddressableTrait;
+    use AddressableTrait, ExpendableTrait;
 
     protected $fillable = ['name', 'type_id'];
 
@@ -47,7 +49,7 @@ class Warehouse extends Model implements Addressable
         return $this->hasMany(Inventory::class);
     }
 
-    public function variants()
+    public function variants($name = null)
     {
 //        return $this->hasManyThrough(
 //            ProductVariant::class,
@@ -58,7 +60,8 @@ class Warehouse extends Model implements Addressable
 //            'product_variant_id'
 //        );
         return $this->inventories()->with([
-            'variant'
+            'supplier',
+            'variant',
         ]);
     }
 

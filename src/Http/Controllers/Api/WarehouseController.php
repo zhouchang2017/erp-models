@@ -3,6 +3,7 @@
 namespace Chang\Erp\Http\Controllers\Api;
 
 use Chang\Erp\Models\InventoryIncome;
+use Chang\Erp\Models\ProductVariant;
 use Chang\Erp\Models\Warehouse;
 use Chang\Erp\Services\ShipmentService;
 use Illuminate\Http\Request;
@@ -13,6 +14,6 @@ class WarehouseController extends Controller
 {
     public function variants($id, Request $request)
     {
-        return new Paginator(Warehouse::findOrFail($id)->variants()->get(), 15);
+        return Warehouse::findOrFail($id)->variants()->paginate($request->input('perPage', 15));
     }
 }

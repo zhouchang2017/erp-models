@@ -29,6 +29,11 @@ class Inventory extends Model
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 
+    public function supplier()
+    {
+        return $this->hasOne(SupplierVariant::class,'product_variant_id','product_variant_id');
+    }
+
     public function scopeFindWarehouseVariants($query, $warehouseId, $variantId, $productId = null)
     {
         return $query->where([
@@ -58,6 +63,12 @@ class Inventory extends Model
                 static::create($inventoryItem);
         })->tap(function ($inventory) use ($income) {
             event(new InventoryPut($income));
+        });
+    }
+    
+    public static function take(InventoryExpend $expend){
+        $expend->items->each(function ($item) use ($expend) {
+            $expend->warehouse->inventories()->where('product_variant_id', 32)->first()->decrement('stock', $item->pcs);
         });
     }
 }

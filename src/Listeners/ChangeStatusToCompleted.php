@@ -2,7 +2,6 @@
 
 namespace Chang\Erp\Listeners;
 
-use Chang\Erp\Events\InventoryPut;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -21,10 +20,10 @@ class ChangeStatusToCompleted
     /**
      * Handle the event.
      *
-     * @param  InventoryPut  $event
+     * @param  $event
      * @return void
      */
-    public function handle(InventoryPut $event)
+    public function handle($event)
     {
         $event->model->statusToCompleted();
         info('to-completed-handle');

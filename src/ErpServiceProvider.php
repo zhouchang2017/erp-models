@@ -3,6 +3,7 @@
 namespace Chang\Erp;
 
 use Chang\Erp\Events\InventoryPut;
+use Chang\Erp\Events\InventoryTake;
 use Chang\Erp\Events\Shipped;
 use Chang\Erp\Listeners\ChangeStatusToCompleted;
 use Chang\Erp\Listeners\ChangeStatusToShipped;
@@ -28,6 +29,9 @@ class ErpServiceProvider extends ServiceProvider
             SendShipmentNotification::class,
         ],
         InventoryPut::class => [
+            ChangeStatusToCompleted::class,
+        ],
+        InventoryTake::class => [
             ChangeStatusToCompleted::class,
         ],
     ];

@@ -22,6 +22,8 @@ class InventoryIncomeItem extends Model implements Trackable
         'price',
     ];
 
+    protected $touches = ['inventoryIncome'];
+
     protected static function boot()
     {
         parent::boot();

@@ -6,11 +6,15 @@ namespace Chang\Erp\Models;
 // 出库
 use Chang\Erp\Contracts\Commentable;
 use Chang\Erp\Contracts\Trackable;
+use Chang\Erp\Observers\InventoryExpendObserver;
 use Chang\Erp\Traits\CommentableTrait;
 use Chang\Erp\Traits\UpdateInventoryTrait;
 use Chang\Erp\Traits\MoneyFormatableTrait;
 use Chang\Erp\Traits\TrackableTrait;
 
+/**
+ * @property mixed items
+ */
 class InventoryExpend extends Model implements Trackable, Commentable
 {
     use TrackableTrait,
@@ -40,6 +44,13 @@ class InventoryExpend extends Model implements Trackable, Commentable
         'has_shipment' => 'boolean',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+        self::observe(InventoryExpendObserver::class);
+    }
+
+
     public static function selectOptions()
     {
         return [
@@ -53,11 +64,21 @@ class InventoryExpend extends Model implements Trackable, Commentable
 
     public function expendable()
     {
-       return $this->morphTo();
+        return $this->morphTo();
     }
 
     public function items()
     {
         return $this->hasMany(InventoryExpendItem::class);
+    }
+
+    public function to()
+    {
+        return $this->morphTo('expendable');
+    }
+
+    public function completed()
+    {
+        return Inventory::take($this);
     }
 }

@@ -29,6 +29,7 @@ trait UpdateInventoryTrait
         return $this->belongsTo(Warehouse::class);
     }
 
+
     public function setStatusAttribute($value)
     {
         if ((int)$value === self::PADDING) {

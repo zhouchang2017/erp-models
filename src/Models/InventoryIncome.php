@@ -79,5 +79,9 @@ class InventoryIncome extends Model implements Trackable, Commentable
         return Inventory::put($this);
     }
 
+    public function to()
+    {
+        return $this->belongsTo(Warehouse::class, 'warehouse_id');
+    }
 
 }

@@ -17,6 +17,8 @@ class InventoryExpendItem extends Model
         'price',
     ];
 
+    protected $touches = ['inventoryExpend'];
+
     public function inventoryExpend()
     {
         return $this->belongsTo(InventoryExpend::class);
@@ -29,7 +31,8 @@ class InventoryExpendItem extends Model
 
     public function variant()
     {
-        return $this->belongsTo(ProductVariant::class);
+        return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
+
 
 }

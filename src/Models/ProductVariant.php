@@ -5,6 +5,9 @@ namespace Chang\Erp\Models;
 //use ProductProvider;
 use Dimsav\Translatable\Translatable;
 
+/**
+ * @property mixed supplierVariant
+ */
 class ProductVariant extends Model
 {
     use Translatable;
@@ -56,19 +59,34 @@ class ProductVariant extends Model
     }
 
 
-    public function supplier()
+    public function supplier() :User
     {
-        return $this->hasOne(SupplierVariant::class, 'user_id');
+        return $this->supplierVariant->user;
     }
 
-    public function user()
+    public function getSupplierAttribute()
     {
-        return $this->hasOne(SupplierVariant::class, 'user_id');
+        return $this->supplier();
+    }
+
+    public function user() :User
+    {
+        return $this->supplierVariant->user;
+    }
+
+    public function getUserAttribute()
+    {
+        return $this->user();
     }
 
     public function supplierVariant()
     {
         return $this->hasOne(SupplierVariant::class, 'product_variant_id');
+    }
+
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class, 'product_variant_id');
     }
 
     public function hasPrice()

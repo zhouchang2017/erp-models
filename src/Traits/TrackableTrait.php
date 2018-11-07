@@ -75,6 +75,9 @@ trait TrackableTrait
         }
     }
 
+    /**
+     * 改变完成状态，标记为已完成，写入完成时间
+     */
     public function statusToCompleted()
     {
         if ((int)$this->{$this->getStatusField()} === $this->statusWhenShippedValue()) {

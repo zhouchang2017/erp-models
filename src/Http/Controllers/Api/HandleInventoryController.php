@@ -2,6 +2,8 @@
 
 namespace Chang\Erp\Http\Controllers\Api;
 
+use App\Http\Resources\InventoryAbleResource;
+use Chang\Erp\Models\InventoryExpend;
 use Chang\Erp\Models\InventoryIncome;
 use Chang\Erp\Services\ShipmentService;
 use Illuminate\Http\Request;
@@ -11,6 +13,7 @@ class HandleInventoryController extends Controller
 {
     protected $model = [
         'inventory-incomes' => InventoryIncome::class,
+        'inventory-expends' => InventoryExpend::class,
     ];
 
     protected function getModel($type, $resourceId)
@@ -21,21 +24,22 @@ class HandleInventoryController extends Controller
     public function show($type, $resourceId)
     {
         if (array_key_exists($type, $this->model)) {
-            return app($this->model[$type])->with('items.variant', 'warehouse.address', 'tracks')
-                ->find($resourceId);
+            return new InventoryAbleResource(app($this->model[$type])->with('items.variant', 'to.address', 'tracks')
+                ->find($resourceId));
         }
     }
 
     public function shipment($type, $resourceId, Request $request)
     {
         if (array_key_exists($type, $this->model)) {
-            $service = new ShipmentService($this->getModel($type,$resourceId));
+            $service = new ShipmentService($this->getModel($type, $resourceId));
             $service->fillAttributeFromRequest($request);
         }
     }
 
-    public function put($type, $resourceId)
+    public function completed($type, $resourceId)
     {
         return $this->getModel($type, $resourceId)->completed();
     }
+
 }
