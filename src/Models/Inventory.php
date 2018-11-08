@@ -48,14 +48,14 @@ class Inventory extends Model
 
     /**
      * 入库
-     * @param Inventoriable $inventoriable
+     * @param InventoryIncome $inventoryIncome
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
-    public static function put(Inventoriable $inventoriable)
+    public static function put(InventoryIncome $inventoryIncome)
     {
-        return $inventoriable->items->map(function ($item) use ($inventoriable) {
+        return $inventoryIncome->items->map(function ($item) use ($inventoryIncome) {
             $inventoryItem = [
-                'warehouse_id' => $inventoriable->toWarehouseId(),
+                'warehouse_id' => $inventoryIncome->warehouse_id,
                 'product_id' => $item->product_id,
                 'product_variant_id' => $item->product_variant_id,
                 'stock' => $item->pcs,
@@ -68,25 +68,25 @@ class Inventory extends Model
             return $inventory ?
                 $inventory->increment('stock', $inventoryItem['stock']) :
                 static::create($inventoryItem);
-        })->tap(function () use ($inventoriable) {
-            event(new InventoryPut($inventoriable));
+        })->tap(function () use ($inventoryIncome) {
+//            event(new InventoryPut($inventoryIncome));
         });
     }
 
     /**
      * 出库
-     * @param Inventoriable $inventoriable
+     * @param InventoryExpend $inventoryExpend
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
-    public static function take(Inventoriable $inventoriable)
+    public static function take(InventoryExpend $inventoryExpend)
     {
-        return $inventoriable->items->map(function ($item) use ($inventoriable) {
-            return tap($inventoriable->warehouse->inventories()->where('product_variant_id', 32)->first(),
+        return $inventoryExpend->items->map(function ($item) use ($inventoryExpend) {
+            return tap($inventoryExpend->warehouse->inventories()->where('product_variant_id', 32)->first(),
                 function ($inventory) use ($item) {
                     $inventory->decrement('stock', $item->pcs);
                 });
-        })->tap(function () use ($inventoriable) {
-            event(new InventoryTake($inventoriable));
+        })->tap(function () use ($inventoryExpend) {
+//            event(new InventoryTake($inventoryExpend));
         });
     }
 }

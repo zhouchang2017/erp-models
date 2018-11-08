@@ -5,7 +5,6 @@ namespace Chang\Erp\Models;
 
 // 出库
 use Chang\Erp\Contracts\Commentable;
-use Chang\Erp\Contracts\Inventoriable;
 use Chang\Erp\Contracts\Trackable;
 use Chang\Erp\Observers\InventoryExpendObserver;
 use Chang\Erp\Traits\CommentableTrait;
@@ -16,7 +15,7 @@ use Chang\Erp\Traits\TrackableTrait;
 /**
  * @property mixed items
  */
-class InventoryExpend extends Model implements Trackable, Commentable, Inventoriable
+class InventoryExpend extends Model implements Trackable, Commentable
 {
     use TrackableTrait,
         CommentableTrait,
@@ -73,41 +72,23 @@ class InventoryExpend extends Model implements Trackable, Commentable, Inventori
         return $this->hasMany(InventoryExpendItem::class);
     }
 
-    public function to()
+    public function afterShipped()
     {
-        return $this->morphTo('expendable');
+        //
     }
 
-    public function customer()
+    public function afterCompleted()
     {
-        return $this->expendable();
+        //
     }
 
-    public function producer()
-    {
-        return $this->warehouse();
-    }
-
-    public function toWarehouseId(): int
-    {
-        if ($this->customer instanceof Warehouse) {
-            return $this->customer->id;
-        }
-        return 0;
-    }
-
-    public function formWarehouseId(): int
-    {
-        return $this->warehouse_id;
-    }
-
-    public function decrementInventory()
+    public function beforeShipped()
     {
         Inventory::take($this);
     }
 
-    public function incrementInventory()
+    public function beforeCompleted()
     {
-        Inventory::put($this);
+        //
     }
 }

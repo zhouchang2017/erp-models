@@ -9,6 +9,7 @@
 namespace Chang\Erp\Traits;
 
 
+use Chang\Erp\Contracts\Orderable;
 use Chang\Erp\Models\Order;
 
 trait OrderableTrait
@@ -22,7 +23,8 @@ trait OrderableTrait
     {
         return [
             'order_status' => $this->getStatus(),
-            'market_id' => $this->market_id,
+            'market_id' => $this->getMarketId(),
+            'price' => (string)$this->getTotalPrice(),
             'created_at' => $this->getCreatedAt(),
             'updated_at' => $this->getUpdatedAt(),
         ];
@@ -36,6 +38,30 @@ trait OrderableTrait
     public function getUpdatedAt()
     {
         return $this->updated_at;
+    }
+
+    public static function syncOrder($orderId)
+    {
+        return static::findOrFail($orderId)->sync();
+    }
+
+    public function sync()
+    {
+        if (is_null($this->order)) {
+            // 创建
+            return $this->order()->create($this->register());
+        }
+        // 更新
+        return tap($this->order, function ($order) {
+            $order->update($this->register());
+        });
+    }
+
+    public static function syncAll()
+    {
+        return static::all()->map(function (Orderable $orderable) {
+            return $orderable->sync();
+        });
     }
 
 }

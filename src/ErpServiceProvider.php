@@ -2,12 +2,14 @@
 
 namespace Chang\Erp;
 
+use Chang\Erp\Events\CompletedEvent;
 use Chang\Erp\Events\InventoryPut;
 use Chang\Erp\Events\InventoryTake;
-use Chang\Erp\Events\Shipped;
-use Chang\Erp\Listeners\ChangeStatusToCompleted;
-use Chang\Erp\Listeners\ChangeStatusToShipped;
-use Chang\Erp\Listeners\SendShipmentNotification;
+use Chang\Erp\Events\ShippedEvent;
+use Chang\Erp\Listeners\ChangeStatusToCompletedListener;
+use Chang\Erp\Listeners\ChangeStatusToShippedListener;
+use Chang\Erp\Listeners\SendCompletedNotificationListener;
+use Chang\Erp\Listeners\SendShipmentNotificationListener;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Spatie\MediaLibrary\Filesystem\Filesystem;
@@ -24,15 +26,13 @@ class ErpServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        Shipped::class => [
-            ChangeStatusToShipped::class,
-            SendShipmentNotification::class,
+        ShippedEvent::class => [
+            ChangeStatusToShippedListener::class,
+            SendShipmentNotificationListener::class,
         ],
-        InventoryPut::class => [
-            ChangeStatusToCompleted::class,
-        ],
-        InventoryTake::class => [
-            ChangeStatusToCompleted::class,
+        CompletedEvent::class => [
+            ChangeStatusToCompletedListener::class,
+            SendCompletedNotificationListener::class,
         ],
     ];
 

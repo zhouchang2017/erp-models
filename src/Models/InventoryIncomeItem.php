@@ -3,14 +3,12 @@
 namespace Chang\Erp\Models;
 
 
-use Chang\Erp\Contracts\Trackable;
 use Chang\Erp\Observers\InventoryIncomeItemObserver;
 use Chang\Erp\Traits\MoneyFormatableTrait;
-use Chang\Erp\Traits\TrackableTrait;
 
-class InventoryIncomeItem extends Model implements Trackable
+class InventoryIncomeItem extends Model
 {
-    use MoneyFormatableTrait, TrackableTrait;
+    use MoneyFormatableTrait;
 
     protected $connection = 'mysql';
 

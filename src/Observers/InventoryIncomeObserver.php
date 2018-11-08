@@ -12,36 +12,13 @@ use Chang\Erp\Models\InventoryIncome;
 
 class InventoryIncomeObserver
 {
+
     public function saving(InventoryIncome $income)
     {
-        $this->autoCalcItems($income);
-
         // 标记审核时间
         if ((int)$income->status === InventoryIncome::UN_SHIP) {
-            $this->updateConfirmedAt($income);
+            $income->updateConfirmedAt();
         }
     }
 
-    public function updated(InventoryIncome $income)
-    {
-        // 完成状态 更新库存
-        if ((int)$income->status === InventoryIncome::COMPLETED) {
-            $income->incrementInventory();
-        }
-    }
-
-    /**
-     * 计算items 价格|数量
-     * @param InventoryIncome $income
-     */
-    protected function autoCalcItems(InventoryIncome $income)
-    {
-        $income->price = $income->calcTotalPrice();
-        $income->pcs = $income->calcTotalPcs();
-    }
-
-    protected function updateConfirmedAt($income)
-    {
-        $income->confirmed_at = now();
-    }
 }

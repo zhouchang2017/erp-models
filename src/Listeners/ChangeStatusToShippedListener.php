@@ -2,11 +2,11 @@
 
 namespace Chang\Erp\Listeners;
 
-use Chang\Erp\Events\Shipped;
+use Chang\Erp\Events\ShippedEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ChangeStatusToShipped
+class ChangeStatusToShippedListener
 {
     /**
      * Create the event listener.
@@ -21,10 +21,10 @@ class ChangeStatusToShipped
     /**
      * Handle the event.
      *
-     * @param  Shipped  $event
+     * @param  ShippedEvent  $event
      * @return void
      */
-    public function handle(Shipped $event)
+    public function handle(ShippedEvent $event)
     {
         $event->model->statusToShipped();
         info('to-shipped-handle');

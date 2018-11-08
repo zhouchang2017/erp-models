@@ -17,6 +17,7 @@ class CreateOrdersTable extends Migration
             $table->increments('id');
             $table->morphs('orderable');
             $table->string('order_status');
+            $table->integer('price')->comment('订单总价格');
             $table->unsignedInteger('market_id');
             $table->timestamps();
         });

@@ -5,7 +5,7 @@ namespace Chang\Erp\Listeners;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ChangeStatusToCompleted
+class ChangeStatusToCompletedListener
 {
     /**
      * Create the event listener.

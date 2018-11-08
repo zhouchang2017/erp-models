@@ -90,7 +90,6 @@ trait TrackableTrait
             $this->{$this->getCompletedAtField()} = now();
             $this->save();
         }
-        return $this;
     }
 
 }

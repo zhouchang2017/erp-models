@@ -9,9 +9,11 @@
 namespace Chang\Erp\Services;
 
 use Chang\Erp\Contracts\Trackable;
-use Chang\Erp\Events\Shipped;
+use Chang\Erp\Events\CompletedEvent;
+use Chang\Erp\Events\ShippedEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class ShipmentService
 {
@@ -24,13 +26,7 @@ class ShipmentService
         $this->model = $model;
     }
 
-    public function setRequestKey(array $key)
-    {
-        $this->requestKey = $key;
-        return $this;
-    }
-
-    public function fillAttributeFromRequest(Request $request)
+    protected function fillAttributeFromRequest(Request $request)
     {
         if ($request->has('tracks')) {
             $data = collect($request->input('tracks', []));
@@ -55,10 +51,31 @@ class ShipmentService
         if ($request->has('has_shipment')) {
             $this->model->update(['has_shipment' => $request->get('has_shipment')]);
         }
+    }
 
-        if ( !$this->model->isShipped() && !$this->model->has_shipment || $this->model->hasTracks()) {
-            event(new Shipped($this->model));
-        }
+    // 发货操作
+    public function shipment(Request $request)
+    {
+        return DB::transaction(function ()use($request) {
+            $this->model->beforeShipped();
+            $this->fillAttributeFromRequest($request);
+            if ( !$this->model->isShipped() && !$this->model->has_shipment || $this->model->hasTracks()) {
+                event(new ShippedEvent($this->model));
+            }
+            $this->model->afterShipped();
+            return $this->model;
+        });
+    }
+
+    // 确认收货操作
+    public function completed()
+    {
+        return DB::transaction(function () {
+            $this->model->beforeCompleted();
+            event(new CompletedEvent($this->model));
+            $this->model->afterCompleted();
+            return $this->model;
+        });
     }
 
 
