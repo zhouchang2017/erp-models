@@ -48,4 +48,5 @@ interface Trackable
 
     // 完成后钩子
     public function afterCompleted();
+
 }

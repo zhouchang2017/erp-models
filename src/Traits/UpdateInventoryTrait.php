@@ -48,8 +48,68 @@ trait UpdateInventoryTrait
     public function updateConfirmedAt()
     {
         if (is_null($this->confirmed_at)) {
+            $this->beforeConfirmed();
             $this->confirmed_at = now();
+            $this->afterConfirmed();
         }
+    }
+
+    /*
+     * 手动标记审核操作,模型自动保存
+     * */
+    public function statusToConfirmed()
+    {
+        if ((int)$this->attributes['status'] < self::UN_SHIP) {
+            $this->attributes['status'] = self::UN_SHIP;
+            $this->updateConfirmedAt();
+            $this->save();
+        }
+        return $this;
+    }
+
+    // 审核前置钩子
+    protected function beforeConfirmed()
+    {
+
+    }
+
+    // 审核后置钩子
+    protected function afterConfirmed()
+    {
+
+    }
+
+    /*
+     * 出货单取消,模型自动保存
+     * */
+    public function statusToCancel()
+    {
+        if ((int)$this->attributes['status'] !== self::CANCEL) {
+            $this->beforeCancel();
+            $this->attributes['status'] = self::CANCEL;
+            $this->save();
+            $this->afterCancel();
+        }
+        return $this;
+    }
+
+    // 取消前置钩子
+    protected function beforeCancel()
+    {
+
+    }
+
+    // 取消后置钩子
+    protected function afterCancel()
+    {
+
+    }
+
+    public function statusToSave()
+    {
+        $this->attributes['status'] = self::UN_COMMIT;
+        $this->confirmed_at = null;
+        $this->save();
     }
 
     public function warehouse()
@@ -58,6 +118,10 @@ trait UpdateInventoryTrait
     }
 
 
+    /**
+     * 当前仓库如果无需审核，则用户提交之后自动更新状态为以审核待发货
+     * @param $value
+     */
     public function setStatusAttribute($value)
     {
         if ((int)$value === self::PADDING) {

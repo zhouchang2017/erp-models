@@ -102,4 +102,8 @@ class Warehouse extends Model implements Addressable, Expendable
         return $this->variants()->get();
     }
 
+    public function getExpendItemList(): ExpendItems
+    {
+        // TODO: Implement getExpendItemList() method.
+    }
 }

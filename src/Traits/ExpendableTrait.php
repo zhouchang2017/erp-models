@@ -22,4 +22,19 @@ trait ExpendableTrait
     {
         return $this->morphOne(InventoryExpend::class, 'expendable');
     }
+
+    public function getDescription(): string
+    {
+        return '';
+    }
+
+    public function reExpend()
+    {
+
+    }
+
+    public function cancelExpend()
+    {
+
+    }
 }

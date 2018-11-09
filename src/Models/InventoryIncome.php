@@ -74,20 +74,6 @@ class InventoryIncome extends Model implements Trackable, Commentable
         return $this->hasMany(InventoryIncomeItem::class);
     }
 
-    public function afterShipped()
-    {
-        // TODO: Implement afterShipped() method.
-    }
-
-    public function afterCompleted()
-    {
-        //
-    }
-
-    public function beforeShipped()
-    {
-        // TODO: Implement beforeShipped() method.
-    }
 
     public function beforeCompleted()
     {

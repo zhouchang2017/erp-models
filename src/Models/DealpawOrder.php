@@ -98,4 +98,20 @@ class DealpawOrder extends Model implements Orderable
     {
         return $this->total;
     }
+
+    public function getExpendItemList(): ExpendItems
+    {
+        $data = $this
+            ->items()
+            ->get(['product_id', 'variant_id', 'quantity', 'units_total'])
+            ->map(function ($order) {
+                return [
+                    'product_id' => $order->product_id,
+                    'product_variant_id' => $order->variant_id,
+                    'pcs' => $order->quantity,
+                    'price' => $order->units_total,
+                ];
+            });
+        return new ExpendItems($data);
+    }
 }

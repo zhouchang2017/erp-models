@@ -3,6 +3,7 @@
 namespace Chang\Erp\Models;
 
 
+use Chang\Erp\Observers\InventoryExpendItemObserver;
 use Chang\Erp\Traits\MoneyFormatableTrait;
 
 class InventoryExpendItem extends Model
@@ -18,6 +19,13 @@ class InventoryExpendItem extends Model
     ];
 
     protected $touches = ['inventoryExpend'];
+
+    protected static function boot()
+    {
+        parent::boot();
+        self::observe(InventoryExpendItemObserver::class);
+    }
+
 
     public function inventoryExpend()
     {

@@ -92,4 +92,24 @@ trait TrackableTrait
         }
     }
 
+    public function beforeShipped()
+    {
+        // TODO: Implement beforeShipped() method.
+    }
+
+    public function afterShipped()
+    {
+        // TODO: Implement afterShipped() method.
+    }
+
+    public function beforeCompleted()
+    {
+        // TODO: Implement beforeCompleted() method.
+    }
+
+    public function afterCompleted()
+    {
+        // TODO: Implement afterCompleted() method.
+    }
+
 }

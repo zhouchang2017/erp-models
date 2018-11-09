@@ -9,6 +9,8 @@
 namespace Chang\Erp\Contracts;
 
 
+use Chang\Erp\Models\ExpendItems;
+
 interface Orderable
 {
     // 获取订单状态
@@ -43,5 +45,8 @@ interface Orderable
 
     // 获取订单总价格
     public function getTotalPrice(): string;
+
+    // 获取产生出货单参数列表
+    public function getExpendItemList(): ExpendItems;
 
 }

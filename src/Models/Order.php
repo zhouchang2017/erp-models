@@ -2,11 +2,20 @@
 
 namespace Chang\Erp\Models;
 
+use App\Exceptions\InventoryOverflowException;
+use Chang\Erp\Contracts\Expendable;
 use Chang\Erp\Contracts\Orderable;
 use Chang\Erp\Traits\ExpendableTrait;
 use Chang\Erp\Traits\MoneyFormatableTrait;
+use Illuminate\Support\Collection;
 
-class Order extends Model
+/**
+ * Class Order
+ * @property mixed inventoryExpends
+ * @property mixed orderable
+ * @package Chang\Erp\Models
+ */
+class Order extends Model implements Expendable
 {
     use MoneyFormatableTrait, ExpendableTrait;
 
@@ -37,6 +46,11 @@ class Order extends Model
         return $this->morphTo();
     }
 
+    public function market()
+    {
+        return $this->belongsTo(Market::class);
+    }
+
     public static function syncOrder(Orderable $orderable)
     {
         static::updateOrCreate([
@@ -45,15 +59,35 @@ class Order extends Model
         ], $orderable->register());
     }
 
-    // 订单发货的时候调用
-    public function expend()
+    public function getDescription(): string
     {
-        // 查出所有变体数量 items
-        return $this->orderable->items->map(function($item){
-            $item->inventory = Warehouse::findVariant($item->variant_id,$item->quantity);
-            return $item;
-        });
-        // 生成 inventory expend 记录
+        return $this->market()->pluck('name')->first() . '-' . $this->orderable->number;
+    }
 
+    public function address()
+    {
+        return $this->orderable->address();
+    }
+
+    /**
+     * 取消出货单
+     * @return mixed
+     */
+    public function cancelExpend()
+    {
+        return $this->inventoryExpends->map->statusToCancel();
+    }
+
+    /*
+     * 重置出货单
+     * */
+    public function reExpend()
+    {
+        $this->inventoryExpends->map->reExpend();
+    }
+
+    public function getExpendItemList(): ExpendItems
+    {
+        return $this->orderable->getExpendItemList();
     }
 }

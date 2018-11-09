@@ -27,6 +27,7 @@ class InventoryExpend extends Model implements Trackable, Commentable
     const UN_SHIP = 2;  //代发货
     const SHIPPED = 3;  //已发货
     const COMPLETED = 4; //已完成
+    const CANCEL = 5; // 取消
 
     protected $fillable = [
         'description',
@@ -59,6 +60,7 @@ class InventoryExpend extends Model implements Trackable, Commentable
             self::UN_SHIP => '等待发货',
             self::SHIPPED => '已发货',
             self::COMPLETED => '已完成',
+            self::CANCEL => '取消',
         ];
     }
 
@@ -72,23 +74,30 @@ class InventoryExpend extends Model implements Trackable, Commentable
         return $this->hasMany(InventoryExpendItem::class);
     }
 
-    public function afterShipped()
-    {
-        //
-    }
 
-    public function afterCompleted()
-    {
-        //
-    }
-
-    public function beforeShipped()
+    // 出货清单审核通过后置操作
+    protected function afterConfirmed()
     {
         Inventory::take($this);
     }
 
-    public function beforeCompleted()
+    // 出货单取消前置钩子
+    protected function beforeCancel()
     {
-        //
+        // 当前出货单状态为审核通过之后状态，取消则，返仓
+        if ((int)$this->attributes['status'] >= self::UN_SHIP) {
+            Inventory::rollback($this);
+        }
     }
+
+    public function reExpend()
+    {
+        return tap($this, function (self $instance) {
+            // 重置出库
+            $instance->beforeCancel();
+            // 初始化状态
+            $instance->statusToSave();
+        });
+    }
+
 }

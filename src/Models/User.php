@@ -54,4 +54,8 @@ class User extends Authenticatable implements Incomeable, Expendable
 //    {
 //        return $this->belongsToMany(ProductVariant::class, 'variant_provider','')->withPivot('price')->withTimestamps();
 //    }
+    public function getExpendItemList(): ExpendItems
+    {
+        // TODO: Implement getExpendItemList() method.
+    }
 }

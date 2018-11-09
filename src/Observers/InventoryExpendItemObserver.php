@@ -10,7 +10,7 @@ namespace Chang\Erp\Observers;
 
 use Chang\Erp\Models\InventoryExpendItem;
 
-class InventoryIncomeExpendObserver
+class InventoryExpendItemObserver
 {
 
     public function saved(InventoryExpendItem $item)

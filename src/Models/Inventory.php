@@ -81,12 +81,28 @@ class Inventory extends Model
     public static function take(InventoryExpend $inventoryExpend)
     {
         return $inventoryExpend->items->map(function ($item) use ($inventoryExpend) {
-            return tap($inventoryExpend->warehouse->inventories()->where('product_variant_id', 32)->first(),
+            return tap($inventoryExpend->warehouse->inventories()->where('product_variant_id',
+                $item->product_variant_id)->first(),
                 function ($inventory) use ($item) {
                     $inventory->decrement('stock', $item->pcs);
                 });
         })->tap(function () use ($inventoryExpend) {
 //            event(new InventoryTake($inventoryExpend));
+        });
+    }
+
+    /**
+     * 取消出货
+     * @param InventoryExpend $inventoryExpend
+     */
+    public static function rollback(InventoryExpend $inventoryExpend)
+    {
+        $inventoryExpend->items->each(function ($item) use ($inventoryExpend) {
+            tap($inventoryExpend->warehouse->inventories()->where('product_variant_id',
+                $item->product_variant_id)->first(),
+                function ($inventory) use ($item) {
+                    $inventory->increment('stock', $item->pcs);
+                });
         });
     }
 }
