@@ -28,5 +28,11 @@ trait MarketableTrait
         if (is_null($this->market)) {
             $this->market()->create(['name' => $this->getName()]);
         }
+        return $this->market;
+    }
+
+    public function sync()
+    {
+        return $this->register();
     }
 }

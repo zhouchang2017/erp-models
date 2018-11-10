@@ -41,6 +41,10 @@ class Order extends Model implements Expendable
         'updated_at',
     ];
 
+    public static $orderables = [
+        DealpawOrder::class,
+    ];
+
     public function orderable()
     {
         return $this->morphTo();
@@ -53,7 +57,7 @@ class Order extends Model implements Expendable
 
     public static function syncOrder(Orderable $orderable)
     {
-        static::updateOrCreate([
+        return static::updateOrCreate([
             'orderable_type' => get_class($orderable),
             'orderable_id' => $orderable->id,
         ], $orderable->register());

@@ -10,6 +10,10 @@ class Market extends Model
         'enabled',
     ];
 
+    public static $marketables = [
+        Dealpaw::class,
+    ];
+
     public function marketable()
     {
         return $this->morphTo();

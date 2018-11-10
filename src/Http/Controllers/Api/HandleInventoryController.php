@@ -48,7 +48,7 @@ class HandleInventoryController extends Controller
             return response('', 201);
         }
         return response('not fount', 404);
-
     }
+
 
 }

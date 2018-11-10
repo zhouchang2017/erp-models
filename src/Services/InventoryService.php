@@ -14,9 +14,7 @@ use Chang\Erp\Contracts\Expendable;
 use Chang\Erp\Models\ExpendItem;
 use Chang\Erp\Models\ExpendItems;
 use Chang\Erp\Models\InventoryExpend;
-use Chang\Erp\Models\Order;
 use Chang\Erp\Models\Warehouse;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -51,7 +49,9 @@ class InventoryService
      */
     public static function cancelExpend(Expendable $expendable)
     {
-        return $expendable->cancelExpend();
+        return DB::transaction(function () use ($expendable) {
+            return $expendable->cancelExpend();
+        });
     }
 
     /**
