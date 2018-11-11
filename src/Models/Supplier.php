@@ -45,6 +45,6 @@ class Supplier extends Model implements HasMedia
 
     public function variants()
     {
-        return $this->hasMany(SupplierVariant::class, 'product_variant_id');
+        return $this->hasMany(SupplierVariant::class, 'user_id', 'user_id');
     }
 }
