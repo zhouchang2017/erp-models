@@ -25,7 +25,7 @@ class InventoryIncomeItem extends Model
     protected static function boot()
     {
         parent::boot();
-        self::observe(InventoryIncomeItemObserver::class);
+//        self::observe(InventoryIncomeItemObserver::class);
     }
 
 

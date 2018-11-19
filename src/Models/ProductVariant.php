@@ -61,7 +61,7 @@ class ProductVariant extends Model
 
     public function supplier() :User
     {
-        return $this->supplierVariant->user;
+        return $this->supplierVariant->suplier;
     }
 
     public function getSupplierAttribute()
@@ -71,7 +71,7 @@ class ProductVariant extends Model
 
     public function user() :User
     {
-        return $this->supplierVariant->user;
+        return $this->supplierVariant->suplier;
     }
 
     public function getUserAttribute()

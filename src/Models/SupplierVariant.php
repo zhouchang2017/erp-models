@@ -13,7 +13,7 @@ class SupplierVariant extends Model
 
     protected $fillable = [
         'product_variant_id',
-        'product_provider_id',
+        'supplier_id',
         'price',
     ];
 
@@ -28,19 +28,14 @@ class SupplierVariant extends Model
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 
-    public function user()
+    public function inventories()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->hasMany(Inventory::class, 'product_variant_id', 'product_variant_id');
     }
 
     public function supplier()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Supplier::class, 'supplier_id');
     }
 
-
-    public function getSupplierId()
-    {
-        return $this->supplier->supplier->id;
-    }
 }
