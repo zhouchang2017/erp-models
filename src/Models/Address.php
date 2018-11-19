@@ -6,6 +6,7 @@ namespace Chang\Erp\Models;
 class Address extends Model
 {
     protected $fillable = [
+        'collection_name',
         'name',
         'tel',
         'phone',

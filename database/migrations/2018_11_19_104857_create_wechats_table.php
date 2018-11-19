@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSupplierVariantsTable extends Migration
+class CreateWechatsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateSupplierVariantsTable extends Migration
      */
     public function up()
     {
-        Schema::create('supplier_variants', function (Blueprint $table) {
+        Schema::create('wechats', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('product_variant_id')->comment('变体id');
-            $table->unsignedInteger('supplier_id')->comment('供应商id');
-            $table->unsignedInteger('price')->default(0)->comment('报价');
+            $table->string('openid');
+            $table->string('nickname');
+            $table->string('avatar');
+            $table->morphs('wechatable');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateSupplierVariantsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('supplier_variants');
+        Schema::dropIfExists('wechats');
     }
 }

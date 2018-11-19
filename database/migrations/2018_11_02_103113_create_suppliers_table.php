@@ -15,13 +15,12 @@ class CreateSuppliersTable extends Migration
     {
         Schema::create('suppliers', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name');
             $table->string('code')->nullable()->comment('供应商代码')->unique();
             $table->unsignedTinyInteger('level')->default(0)->comment('供应商等级');
             $table->text('description')->nullable()->comment('供应商描述说明');
-            $table->string('email')->nullable()->comment('电子邮箱');
-            $table->string('qq')->nullable()->comment('qq');
-            $table->string('wechat')->nullable()->comment('微信');
-            $table->unsignedInteger('user_id')->comment('用户id');
+            $table->unsignedInteger('supplier_user_id')->nullable()->comment('供应商管理员');
+            $table->unsignedInteger('user_id')->nullable()->comment('跟进人');
             $table->timestamps();
             $table->softDeletes();
         });

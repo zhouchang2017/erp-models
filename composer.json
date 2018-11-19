@@ -12,6 +12,7 @@
         "dimsav/laravel-translatable": "^9.2",
         "kalnoy/nestedset": "^4.3",
         "moneyphp/money": "^3.1",
+        "overtrue/laravel-wechat": "~4.0",
         "spatie/laravel-medialibrary": "^7.0.0",
         "vyuldashev/nova-permission": "^1.4",
         "zgldh/qiniu-laravel-storage": "^0.10.0"

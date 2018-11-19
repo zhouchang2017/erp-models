@@ -15,6 +15,7 @@ class CreateAddressesTable extends Migration
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('collection_name')->nullable()->comment('自定义地址归类');
             $table->string('name')->comment('联系人');
             $table->string('tel')->nullable()->comment('联系电话');
             $table->string('phone')->nullable()->comment('手机');

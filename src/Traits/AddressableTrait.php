@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  */
 trait AddressableTrait
 {
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
@@ -28,6 +27,18 @@ trait AddressableTrait
     public function address(): MorphOne
     {
         return $this->morphOne(Address::class, 'addressable');
+    }
+
+    public function addressByCollection($collectionName)
+    {
+        return $this->morphOne(Address::class, 'addressable')
+            ->where('collection_name', $collectionName);
+    }
+
+    public function addressByCollections($collectionName)
+    {
+        return $this->morphMany(Address::class, 'addressable')
+            ->where('collection_name', $collectionName);
     }
 
 
