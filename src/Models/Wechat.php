@@ -3,10 +3,13 @@
 namespace Chang\Erp\Models;
 
 
+/**
+ * @property SupplierUser user
+ */
 class Wechat extends Model
 {
     protected $fillable = [
-        'open_id',
+        'openid',
         'avatar',
         'nickname',
     ];

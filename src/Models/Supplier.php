@@ -10,6 +10,7 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
 /**
  * Class Supplier
+ * @property mixed admin
  * @package Chang\Erp\Models
  */
 class Supplier extends Model implements HasMedia

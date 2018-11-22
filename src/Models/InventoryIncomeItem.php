@@ -25,7 +25,7 @@ class InventoryIncomeItem extends Model
     protected static function boot()
     {
         parent::boot();
-//        self::observe(InventoryIncomeItemObserver::class);
+        self::observe(InventoryIncomeItemObserver::class);
     }
 
 
@@ -42,5 +42,10 @@ class InventoryIncomeItem extends Model
     public function variant()
     {
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
+    }
+
+    public function unit()
+    {
+        return $this->hasMany(InventoryIncomeItemUnit::class, 'item_id');
     }
 }

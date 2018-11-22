@@ -7,6 +7,10 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+/**
+ * @property mixed id
+ * @property mixed supplier
+ */
 class SupplierUser extends Authenticatable
 {
     use Notifiable, WechatableTrait;

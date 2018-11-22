@@ -42,5 +42,10 @@ class InventoryExpendItem extends Model
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 
+    public function unit()
+    {
+        return $this->hasMany(InventoryExpendItemUnit::class, 'item_id');
+    }
+
 
 }
