@@ -4,6 +4,7 @@ namespace Chang\Erp\Models;
 
 //use ProductProvider;
 use Dimsav\Translatable\Translatable;
+use Illuminate\Support\Facades\App;
 
 /**
  * @property mixed supplierVariant
@@ -19,6 +20,8 @@ class ProductVariant extends Model
     public $translationModel = ProductVariantTranslation::class;
 
     public $translatedAttributes = ['name'];
+
+    public static $searchableColumns = ['id', 'code'];
 
     protected $fillable = [
         'product_id',
@@ -59,7 +62,7 @@ class ProductVariant extends Model
     }
 
 
-    public function supplier() :User
+    public function supplier(): User
     {
         return $this->supplierVariant->suplier;
     }
@@ -69,7 +72,7 @@ class ProductVariant extends Model
         return $this->supplier();
     }
 
-    public function user() :User
+    public function user(): User
     {
         return $this->supplierVariant->suplier;
     }
@@ -92,6 +95,38 @@ class ProductVariant extends Model
     public function hasPrice()
     {
         return $this->price()->count() > 0;
+    }
+
+    public static function search($search)
+    {
+        return static::whereHas('translations', function ($query) use ($search) {
+            $query->where('locale_code', App::getLocale())
+                ->where('name', 'like', '%' . $search . '%');
+        });
+    }
+
+    public function scopeSearch($query, $search)
+    {
+        return $query->whereHas('translations', function ($query) use ($search) {
+            $connectionType = $query->getModel()->getConnection()->getDriverName();
+
+            $likeOperator = $connectionType == 'pgsql' ? 'ilike' : 'like';
+            $query->where('locale_code', App::getLocale())
+                ->where('name', $likeOperator, '%' . $search . '%');
+        })->orWhere(function ($query) use ($search) {
+            if (is_numeric($search) && in_array($query->getModel()->getKeyType(), ['int', 'integer'])) {
+                $query->orWhere($query->getModel()->getQualifiedKeyName(), $search);
+            }
+
+            $model = $query->getModel();
+            $connectionType = $query->getModel()->getConnection()->getDriverName();
+
+            $likeOperator = $connectionType == 'pgsql' ? 'ilike' : 'like';
+
+            foreach (static::$searchableColumns as $column) {
+                $query->orWhere($model->qualifyColumn($column), $likeOperator, '%' . $search . '%');
+            }
+        });
     }
 
 }
