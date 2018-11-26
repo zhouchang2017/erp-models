@@ -22,6 +22,7 @@ class InventoryIncomeItem extends Model
 
     protected $touches = ['inventoryIncome'];
 
+
     protected static function boot()
     {
         parent::boot();
