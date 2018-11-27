@@ -118,16 +118,5 @@ trait UpdateInventoryTrait
     }
 
 
-    /**
-     * 当前仓库如果无需审核，则用户提交之后自动更新状态为以审核待发货
-     * @param $value
-     */
-    public function setStatusAttribute($value)
-    {
-        if ((int)$value === self::PADDING) {
-            $this->attributes['status'] = $this->warehouse->has_verify ? $value : self::UN_SHIP;
-        } else {
-            $this->attributes['status'] = $value;
-        }
-    }
+
 }

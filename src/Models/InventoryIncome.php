@@ -41,6 +41,17 @@ class InventoryIncome extends Model implements Trackable, Commentable
         ];
     }
 
+    public static function statusStepOptions()
+    {
+        return [
+            ['title' => '未提交', 'description' => '请完善入库信息', 'value' => self::UN_COMMIT],
+            ['title' => '审核中', 'description' => '等待工作人员审核您的入库信息', 'value' => self::PADDING],
+            ['title' => '等待发货', 'description' => '审核已通过，等待发货', 'value' => self::UN_SHIP],
+            ['title' => '等待平台收货', 'description' => '发货已完成，等待平台接收货品', 'value' => self::SHIPPED],
+            ['title' => '已完成', 'description' => '商品已入库', 'value' => self::COMPLETED],
+        ];
+    }
+
     protected $fillable = [
         'description',
         'pcs',
@@ -79,4 +90,5 @@ class InventoryIncome extends Model implements Trackable, Commentable
     {
         Inventory::put($this);
     }
+
 }
