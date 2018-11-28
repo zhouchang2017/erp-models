@@ -10,6 +10,7 @@ use Chang\Erp\Listeners\ChangeStatusToCompletedListener;
 use Chang\Erp\Listeners\ChangeStatusToShippedListener;
 use Chang\Erp\Listeners\SendCompletedNotificationListener;
 use Chang\Erp\Listeners\SendShipmentNotificationListener;
+use Chang\Erp\Models\InventoryIncome;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Spatie\MediaLibrary\Filesystem\Filesystem;
@@ -42,6 +43,7 @@ class ErpServiceProvider extends ServiceProvider
         $this->registerListeners();
         $this->registerRoutes();
         $this->registerNovaConfig();
+        Route::model('inventoryIncome',InventoryIncome::class);
     }
 
     public function register()

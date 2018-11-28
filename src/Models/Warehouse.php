@@ -26,6 +26,8 @@ class Warehouse extends Model implements Addressable, Expendable
         'has_verify' => 'boolean',
     ];
 
+    protected $appends = ['simple_address'];
+
     /**
      * 数据模型的启动方法
      *
@@ -76,7 +78,7 @@ class Warehouse extends Model implements Addressable, Expendable
     {
         return static::whereVariant($id, $stock, $type, $warehouseId)->get()->filter(function ($item) {
             return $item->inventories->count() > 0;
-        })->flatMap(function($item){
+        })->flatMap(function ($item) {
             return $item->inventories;
         });
     }
