@@ -9,6 +9,13 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class InventoryIncomeController extends Controller
 {
+
+    public function show(InventoryIncome $income)
+    {
+        $income->loadMissing(['items.variant','warehouse']);
+        return $income;
+    }
+
     public function review(InventoryIncome $income)
     {
         $income->statusToPadding();

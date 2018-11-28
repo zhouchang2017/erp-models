@@ -41,5 +41,10 @@ trait AddressableTrait
             ->where('collection_name', $collectionName);
     }
 
+    public function getSimpleAddressAttribute()
+    {
+        return $this->address->simple();
+    }
+
 
 }

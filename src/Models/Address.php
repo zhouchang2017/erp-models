@@ -3,6 +3,17 @@
 namespace Chang\Erp\Models;
 
 
+/**
+ * @property mixed country
+ * @property mixed province
+ * @property mixed city
+ * @property mixed district
+ * @property mixed address
+ * @property mixed name
+ * @property mixed phone
+ * @property mixed tel
+ * @property mixed zip
+ */
 class Address extends Model
 {
     protected $fillable = [
@@ -17,15 +28,21 @@ class Address extends Model
         'city',
         'district',
         'address',
-        'en'
+        'en',
     ];
 
     protected $casts = [
-        'en'=>'array'
+        'en' => 'array',
     ];
 
     public function addressable()
     {
         return $this->morphTo();
+    }
+
+    public function simple()
+    {
+        return $this->country . ' ' . $this->province . ' ' . $this->city . ' ' . $this->district . ' ' . $this->address
+            . ' 收件人:' . $this->name . ' 手机:' . $this->phone . ' 座机:' . $this->tel . ' 邮编:' . $this->zip;
     }
 }
