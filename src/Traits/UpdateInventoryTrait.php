@@ -117,6 +117,10 @@ trait UpdateInventoryTrait
         return $this->belongsTo(Warehouse::class);
     }
 
-
+    public function statusToPadding()
+    {
+        $this->attributes['status'] = self::PADDING;
+        $this->save();
+    }
 
 }
