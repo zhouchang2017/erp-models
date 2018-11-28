@@ -33,11 +33,22 @@ class InventoryIncome extends Model implements Trackable, Commentable
     public static function selectOptions()
     {
         return [
-            self::UN_COMMIT => '保存',
-            self::PADDING => '提交',
-            self::UN_SHIP => '等待发货',
-            self::SHIPPED => '已发货',
+            self::UN_COMMIT => '未提交',
+            self::PADDING => '待审核',
+            self::UN_SHIP => '代发货',
+            self::SHIPPED => '途中',
             self::COMPLETED => '已完成',
+        ];
+    }
+
+    public static function filterOptions()
+    {
+        return [
+            '未提交' => (string)self::UN_COMMIT,
+            '待审核' => (string)self::PADDING,
+            '代发货' => (string)self::UN_SHIP,
+            '途中' => (string)self::SHIPPED,
+            '已完成' => (string)self::COMPLETED,
         ];
     }
 
