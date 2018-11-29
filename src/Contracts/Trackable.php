@@ -11,6 +11,7 @@ namespace Chang\Erp\Contracts;
 
 interface Trackable
 {
+    // 对应物流信息
     public function tracks();
 
     // 标记已发货

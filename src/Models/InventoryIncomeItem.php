@@ -3,12 +3,18 @@
 namespace Chang\Erp\Models;
 
 
+use Chang\Erp\Contracts\Trackable;
 use Chang\Erp\Observers\InventoryIncomeItemObserver;
 use Chang\Erp\Traits\MoneyFormatableTrait;
+use Chang\Erp\Traits\TrackableTrait;
 
-class InventoryIncomeItem extends Model
+/**
+ * @property mixed id
+ * @property mixed pcs
+ */
+class InventoryIncomeItem extends Model implements Trackable
 {
-    use MoneyFormatableTrait;
+    use MoneyFormatableTrait, TrackableTrait;
 
     protected $connection = 'mysql';
 
@@ -45,8 +51,15 @@ class InventoryIncomeItem extends Model
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 
-    public function unit()
+    public function units()
     {
         return $this->hasMany(InventoryIncomeItemUnit::class, 'item_id');
+    }
+
+    public function createItemUnits(array $attribute = [])
+    {
+        return $this->units()->createMany(
+            array_fill(0, $this->pcs, $attribute)
+        );
     }
 }

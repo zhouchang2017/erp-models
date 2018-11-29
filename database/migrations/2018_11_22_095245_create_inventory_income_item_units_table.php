@@ -16,7 +16,7 @@ class CreateInventoryIncomeItemUnitsTable extends Migration
         Schema::create('inventory_income_item_units', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('item_id')->comment('拆单对象');
-            $table->unsignedInteger('shipment_track_id')->comment('物流信息');
+            $table->unsignedInteger('shipment_track_id')->nullable()->comment('物流信息');
             $table->integer('adjustments_total')->default(0)->comment('优惠调整');
         });
     }

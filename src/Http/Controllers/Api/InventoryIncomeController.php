@@ -12,7 +12,7 @@ class InventoryIncomeController extends Controller
 
     public function show(InventoryIncome $income)
     {
-        $income->loadMissing(['items.variant','warehouse']);
+        $income->loadMissing(['items.variant','warehouse','items.units']);
         return $income;
     }
 

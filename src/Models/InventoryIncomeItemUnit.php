@@ -10,6 +10,8 @@ class InventoryIncomeItemUnit extends Model
         'shipment_track_id',
         'adjustments_total',
     ];
+    
+    public $timestamps = false;
 
     public function item()
     {
