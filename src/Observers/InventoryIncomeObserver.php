@@ -13,12 +13,9 @@ use Chang\Erp\Models\InventoryIncome;
 class InventoryIncomeObserver
 {
 
-    public function saving(InventoryIncome $income)
+    public function created(InventoryIncome $income)
     {
-        // 标记审核时间
-        if ((int)$income->status === InventoryIncome::UN_SHIP) {
-            $income->updateConfirmedAt();
-        }
+        $income->statusToSave();
     }
 
 }

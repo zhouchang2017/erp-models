@@ -13,15 +13,6 @@ use Chang\Erp\Models\ShipmentTrack;
 
 trait TrackableTrait
 {
-    protected $statusField = 'status';
-
-    protected $shippedValue = 3;
-
-    protected $shippedAtField = 'shipped_at';
-
-    protected $completedValue = 4;
-
-    protected $completedAtField = 'completed_at';
 
     public function tracks()
     {
@@ -38,78 +29,9 @@ trait TrackableTrait
         return $this->tracks()->count() > 0;
     }
 
-    public function statusWhenShippedValue(): int
-    {
-        return $this->shippedValue;
-    }
-
-    public function getStatusField(): string
-    {
-        return $this->statusField;
-    }
-
-    public function getShippedAtField(): string
-    {
-        return $this->shippedAtField;
-    }
-
-    public function statusWhenCompletedValue(): int
-    {
-        return $this->completedValue;
-    }
-
-    public function getCompletedAtField(): string
-    {
-        return $this->completedAtField;
-    }
-
-    /**
-     * 改变发货状态，标记为已发货，写入发货时间
-     */
-    public function statusToShipped()
-    {
-        if ($this->{$this->getStatusField()} < $this->statusWhenShippedValue()) {
-            $this->{$this->getStatusField()} = $this->statusWhenShippedValue();
-            $this->{$this->getShippedAtField()} = now();
-            $this->save();
-        }
-    }
-
     public function isShipped(): bool
     {
-        return !is_null($this->{$this->getShippedAtField()});
-    }
 
-    /**
-     * 改变完成状态，标记为已完成，写入完成时间
-     */
-    public function statusToCompleted()
-    {
-        if ((int)$this->{$this->getStatusField()} === $this->statusWhenShippedValue()) {
-            $this->{$this->getStatusField()} = $this->statusWhenCompletedValue();
-            $this->{$this->getCompletedAtField()} = now();
-            $this->save();
-        }
-    }
-
-    public function beforeShipped()
-    {
-        // TODO: Implement beforeShipped() method.
-    }
-
-    public function afterShipped()
-    {
-        // TODO: Implement afterShipped() method.
-    }
-
-    public function beforeCompleted()
-    {
-        // TODO: Implement beforeCompleted() method.
-    }
-
-    public function afterCompleted()
-    {
-        // TODO: Implement afterCompleted() method.
     }
 
 }

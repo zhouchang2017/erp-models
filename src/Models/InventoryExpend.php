@@ -11,6 +11,7 @@ use Chang\Erp\Traits\CommentableTrait;
 use Chang\Erp\Traits\UpdateInventoryTrait;
 use Chang\Erp\Traits\MoneyFormatableTrait;
 use Chang\Erp\Traits\TrackableTrait;
+use Spatie\ModelStatus\HasStatuses;
 
 /**
  * @property mixed items
@@ -20,14 +21,15 @@ class InventoryExpend extends Model implements Trackable, Commentable
     use TrackableTrait,
         CommentableTrait,
         MoneyFormatableTrait,
-        UpdateInventoryTrait;
+        UpdateInventoryTrait,
+        HasStatuses;
 
-    const UN_COMMIT = 0; //未提交
-    const PADDING = 1;  //待审核
-    const UN_SHIP = 2;  //代发货
-    const SHIPPED = 3;  //已发货
-    const COMPLETED = 4; //已完成
-    const CANCEL = 5; // 取消
+    const UN_COMMIT = 'UN_COMMIT'; //未提交
+    const PADDING = 'PADDING';  //待审核
+    const UN_SHIP = 'UN_SHIP';  //代发货
+    const SHIPPED = 'SHIPPED';  //已发货
+    const COMPLETED = 'COMPLETED'; //已完成
+    const CANCEL = 'CANCEL'; // 取消
 
     protected $fillable = [
         'description',
@@ -63,6 +65,15 @@ class InventoryExpend extends Model implements Trackable, Commentable
             self::CANCEL => '取消',
         ];
     }
+
+    /*
+     * 状态改变验证
+     * */
+    public function isValidStatus(string $name, ?string $reason = null): bool
+    {
+        return $this->status !== $name;
+    }
+
 
     public function expendable()
     {

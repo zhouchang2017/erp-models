@@ -12,6 +12,8 @@ use Chang\Erp\Traits\UpdateInventoryTrait;
 use Chang\Erp\Traits\MoneyFormatableTrait;
 use Chang\Erp\Traits\TrackableTrait;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\ModelStatus\HasStatuses;
 
 /**
  * @property Collection items
@@ -22,13 +24,16 @@ class InventoryIncome extends Model implements Trackable, Commentable
     use TrackableTrait,
         MoneyFormatableTrait,
         UpdateInventoryTrait,
-        CommentableTrait;
+        CommentableTrait,
+        HasStatuses;
 
-    const UN_COMMIT = 0; //未提交
-    const PADDING = 1;  //待审核
-    const UN_SHIP = 2;  //代发货
-    const SHIPPED = 3;  //已发货
-    const COMPLETED = 4; //已完成
+    const UN_COMMIT = 'UN_COMMIT'; //未提交(保存)
+    const PADDING = 'PADDING';  //待审核
+    const UN_SHIP = 'UN_SHIP';  //代发货
+    const SHIPPED = 'SHIPPED';  //已发货
+    const COMPLETED = 'COMPLETED'; //已完成
+    const CANCEL = 'CANCEL'; //取消
+
 
     public static function selectOptions()
     {
@@ -67,17 +72,15 @@ class InventoryIncome extends Model implements Trackable, Commentable
         'description',
         'pcs',
         'price',
-        'status',
         'warehouse_id',
         'has_shipment',
     ];
 
     protected $casts = [
-        'confirmed_at' => 'datetime', // 审核通过时间
-        'shipped_at' => 'datetime',   // $this->needlessShipment() 无需物流
-        'completed_at' => 'datetime',
         'has_shipment' => 'boolean',
     ];
+
+    protected $with = ['statuses'];
 
     protected static function boot()
     {
@@ -100,6 +103,11 @@ class InventoryIncome extends Model implements Trackable, Commentable
     public function beforeCompleted()
     {
         Inventory::put($this);
+    }
+
+    public function createItemUnits()
+    {
+
     }
 
 }

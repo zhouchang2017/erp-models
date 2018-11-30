@@ -16,10 +16,15 @@ class ProductOption extends Model
 
     public $translatedAttributes = ['name'];
 
-    protected $fillable = ['code', 'position'];
+    protected $fillable = ['code', 'position', 'taxon_id'];
 
     public function values()
     {
         return $this->hasMany(ProductOptionValue::class, 'option_id');
+    }
+
+    public function taxon()
+    {
+        return $this->belongsTo(Taxon::class);
     }
 }

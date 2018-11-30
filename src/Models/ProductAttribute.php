@@ -16,9 +16,18 @@ class ProductAttribute extends Model
 
     public $translatedAttributes = ['name'];
 
-    protected $fillable = ['code', 'type', 'storage_type', 'configuration', 'position'];
+    protected $fillable = ['code', 'taxon_id', 'type', 'storage_type', 'configuration', 'position'];
 
     // type => ['text','textarea','checkbox','integer','percent','datetime','date','select']
 
     // storage_type => ['text','boolean','integer','float','datetime','date','json']
+
+    public function taxon()
+    {
+        return $this->belongsToMany(
+            ProductAttribute::class,
+            'taxon_attribute',
+            'attribute_id',
+            'taxon_id');
+    }
 }

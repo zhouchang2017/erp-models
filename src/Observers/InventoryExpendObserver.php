@@ -16,10 +16,7 @@ class InventoryExpendObserver
 {
     public function saving(InventoryExpend $expend)
     {
-        // 标记审核时间
-        if ((int)$expend->status === InventoryExpend::UN_SHIP) {
-            $expend->updateConfirmedAt();
-        }
+
     }
 
 }

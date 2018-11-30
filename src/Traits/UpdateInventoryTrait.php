@@ -42,85 +42,60 @@ trait UpdateInventoryTrait
         return $this;
     }
 
-    /**
-     * 更新审核时间
-     */
-    public function updateConfirmedAt()
-    {
-        if (is_null($this->confirmed_at)) {
-            $this->beforeConfirmed();
-            $this->confirmed_at = now();
-            $this->afterConfirmed();
-        }
-    }
 
     /*
-     * 手动标记审核操作,模型自动保存
+     * 标记审核操作
      * */
     public function statusToConfirmed()
     {
-        if ((int)$this->attributes['status'] < self::UN_SHIP) {
-            $this->attributes['status'] = self::UN_SHIP;
-            $this->updateConfirmedAt();
-            $this->save();
-        }
-        return $this;
+        $this->setStatus(self::UN_SHIP, '等待发货');
     }
 
-    // 审核前置钩子
-    protected function beforeConfirmed()
-    {
-
-    }
-
-    // 审核后置钩子
-    protected function afterConfirmed()
-    {
-
-    }
 
     /*
-     * 出货单取消,模型自动保存
+     * 进/出货单取消
      * */
     public function statusToCancel()
     {
-        if ((int)$this->attributes['status'] !== self::CANCEL) {
-            $this->beforeCancel();
-            $this->attributes['status'] = self::CANCEL;
-            $this->save();
-            $this->afterCancel();
-        }
-        return $this;
+        $this->setStatus(self::CANCEL, '取消');
     }
 
-    // 取消前置钩子
-    protected function beforeCancel()
+    /*
+     * 标记提交审核
+     * */
+    public function statusToPadding()
     {
-
+        $this->setStatus(self::PADDING, '待审核');
     }
 
-    // 取消后置钩子
-    protected function afterCancel()
-    {
 
-    }
-
+    /*
+     * 状态初始化
+     * */
     public function statusToSave()
     {
-        $this->attributes['status'] = self::UN_COMMIT;
-        $this->confirmed_at = null;
-        $this->save();
+        $this->setStatus(self::UN_COMMIT, '保存/未提交');
+    }
+
+    /*
+     * 标记状态已发货
+     * */
+    public function statusToShipped()
+    {
+        $this->setStatus(self::SHIPPED, '已发货');
+    }
+
+    /*
+     * 标记状态已完成
+     * */
+    public function statusToCompleted()
+    {
+        $this->setStatus(self::COMPLETED, '已完成');
     }
 
     public function warehouse()
     {
         return $this->belongsTo(Warehouse::class);
-    }
-
-    public function statusToPadding()
-    {
-        $this->attributes['status'] = self::PADDING;
-        $this->save();
     }
 
 }
