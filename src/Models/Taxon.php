@@ -2,9 +2,11 @@
 
 namespace Chang\Erp\Models;
 
+use Chang\Erp\Support\NodeCollection;
 use Dimsav\Translatable\Translatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Kalnoy\Nestedset\NodeTrait;
+
 
 class Taxon extends Model
 {
@@ -81,5 +83,13 @@ class Taxon extends Model
     public function getParentNameAttribute()
     {
         return $this->parent->name ?? null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function newCollection(array $models = array())
+    {
+        return new NodeCollection($models);
     }
 }

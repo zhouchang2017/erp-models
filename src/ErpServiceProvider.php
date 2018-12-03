@@ -61,6 +61,12 @@ class ErpServiceProvider extends ServiceProvider
         Nova::serving(function (ServingNova $event) {
             Nova::provideToScript([
                 'erp-prefix' => '/erp-api',
+
+                'locales'=>array_map(function ($value) {
+                    return __($value);
+                }, config('translatable.locales')),
+
+                'indexLocale' => app()->getLocale(),
             ]);
         });
     }

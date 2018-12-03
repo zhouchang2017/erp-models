@@ -22,6 +22,11 @@ class ProductAttribute extends Model
 
     // storage_type => ['text','boolean','integer','float','datetime','date','json']
 
+    public function scopeWhereTaxon($query, $id)
+    {
+        return $query->where('taxon_id', $id);
+    }
+
     public function taxon()
     {
         return $this->belongsToMany(

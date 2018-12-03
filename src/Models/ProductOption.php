@@ -23,6 +23,11 @@ class ProductOption extends Model
         return $this->hasMany(ProductOptionValue::class, 'option_id');
     }
 
+    public function scopeWhereTaxon($query, $id)
+    {
+        return $query->where('taxon_id', $id);
+    }
+
     public function taxon()
     {
         return $this->belongsTo(Taxon::class);
