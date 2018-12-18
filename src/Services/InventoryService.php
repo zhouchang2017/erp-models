@@ -11,9 +11,12 @@ namespace Chang\Erp\Services;
 
 use App\Exceptions\InventoryOverflowException;
 use Chang\Erp\Contracts\Expendable;
+use Chang\Erp\Events\InventoryIncrementEvent;
 use Chang\Erp\Models\ExpendItem;
 use Chang\Erp\Models\ExpendItems;
+use Chang\Erp\Models\Inventory;
 use Chang\Erp\Models\InventoryExpend;
+use Chang\Erp\Models\InventoryIncome;
 use Chang\Erp\Models\Warehouse;
 use Illuminate\Support\Facades\DB;
 
@@ -23,6 +26,79 @@ use Illuminate\Support\Facades\DB;
  */
 class InventoryService
 {
+
+    /**
+     * 出库
+     * @param InventoryExpend $inventoryExpend
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
+     */
+    public static function take(InventoryExpend $inventoryExpend)
+    {
+        return DB::transaction(function () use ($inventoryExpend) {
+            return $inventoryExpend->items->map(function ($item) use ($inventoryExpend) {
+                return tap($inventoryExpend->warehouse->inventories()->where('product_variant_id',
+                    $item->product_variant_id)->first(),
+                    function ($inventory) use ($item) {
+                        // TODO 验证数量
+                        $inventory->decrement('stock', $item->pcs);
+                    });
+            });
+        });
+    }
+
+    /**
+     * 取消出库
+     * @param InventoryExpend $inventoryExpend
+     * @return mixed
+     */
+    public static function rollback(InventoryExpend $inventoryExpend)
+    {
+        return DB::transaction(function () use ($inventoryExpend) {
+            $inventoryExpend->items->each(function ($item) use ($inventoryExpend) {
+                tap($inventoryExpend->warehouse->inventories()->where('product_variant_id',
+                    $item->product_variant_id)->first(),
+                    function ($inventory) use ($item) {
+                        $inventory->increment('stock', $item->pcs);
+                    });
+            });
+            return $inventoryExpend;
+        });
+    }
+
+    /**
+     * 入库
+     * @param InventoryIncome $inventoryIncome
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
+     */
+    public static function put(InventoryIncome $inventoryIncome)
+    {
+        return DB::transaction(function () use ($inventoryIncome) {
+            return $inventoryIncome->items->map(function ($item) use ($inventoryIncome) {
+                $inventoryItem = [
+                    'warehouse_id' => $inventoryIncome->warehouse_id,
+                    'product_id' => $item->product_id,
+                    'product_variant_id' => $item->product_variant_id,
+                    'stock' => $item->pcs,
+                ];
+                $inventory = Inventory::findWarehouseVariants(
+                    $inventoryItem['warehouse_id'],
+                    $inventoryItem['product_variant_id']
+                )->first();
+
+                if ($inventory) {
+                    $inventory->increment('stock', $inventoryItem['stock']);
+                } else {
+                    $inventory = Inventory::create($inventoryItem);
+                }
+
+                // 库存增加事件
+                event(new InventoryIncrementEvent($inventory, $inventoryItem['stock']));
+
+                return $inventory;
+            });
+        });
+    }
+
     /**
      * 产生出货记录
      * @param Expendable $expendable
@@ -102,7 +178,7 @@ class InventoryService
             });
 
             return tap($inventoryExpend, function (InventoryExpend $inventoryExpend) {
-                $inventoryExpend->statusToConfirmed();
+                $inventoryExpend->statusToApproved();
             });
         })->flatten();
     }

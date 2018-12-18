@@ -46,51 +46,64 @@ trait UpdateInventoryTrait
     /*
      * 标记审核操作
      * */
-    public function statusToConfirmed()
+    public function statusToApproved($reason = '等待发货')
     {
-        $this->setStatus(self::UN_SHIP, '等待发货');
+        $this->setStatus(self::UN_SHIP, $reason);
     }
 
 
     /*
      * 进/出货单取消
      * */
-    public function statusToCancel()
+    public function statusToCancel($reason = '取消')
     {
-        $this->setStatus(self::CANCEL, '取消');
+        $this->setStatus(self::CANCEL, $reason);
     }
 
     /*
      * 标记提交审核
      * */
-    public function statusToPadding()
+    public function statusToPadding($reason = '待审核')
     {
-        $this->setStatus(self::PADDING, '待审核');
+        $this->setStatus(self::PENDING, $reason);
     }
 
 
     /*
      * 状态初始化
      * */
-    public function statusToSave()
+    public function statusToSave($reason = '保存/未提交')
     {
-        $this->setStatus(self::UN_COMMIT, '保存/未提交');
+        $this->setStatus(self::UN_COMMIT, $reason);
+    }
+
+    /*
+     * 标记状态部分发货
+     * */
+    public function statusToPartShipped($reason = '部分发货')
+    {
+        $this->setStatus(self::PART_SHIPPED, $reason);
     }
 
     /*
      * 标记状态已发货
      * */
-    public function statusToShipped()
+    public function statusToShipped($reason = '已发货')
     {
-        $this->setStatus(self::SHIPPED, '已发货');
+        $this->setStatus(self::SHIPPED, $reason);
     }
 
     /*
      * 标记状态已完成
      * */
-    public function statusToCompleted()
+    public function statusToCompleted($reason = '已完成')
     {
-        $this->setStatus(self::COMPLETED, '已完成');
+        $this->setStatus(self::COMPLETED, $reason);
+    }
+
+    public function canUpdate()
+    {
+        return $this->status === self::UN_COMMIT;
     }
 
     public function warehouse()

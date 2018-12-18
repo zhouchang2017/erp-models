@@ -42,9 +42,22 @@ class InventoryExpendItem extends Model
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
     }
 
-    public function unit()
+    public function units()
     {
         return $this->hasMany(InventoryExpendItemUnit::class, 'item_id');
+    }
+
+    public function createItemUnits(array $attribute = [])
+    {
+        return $this->units()->createMany(
+            array_fill(0, $this->pcs, $attribute)
+        );
+    }
+
+    public function tracks()
+    {
+        return $this->belongsToMany(ShipmentTrack::class, 'inventory_expend_item_units', 'item_id',
+            'shipment_track_id');
     }
 
 

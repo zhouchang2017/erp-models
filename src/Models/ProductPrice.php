@@ -19,6 +19,7 @@ class ProductPrice extends Model
         return $this->belongsTo(ProductVariant::class, 'variant_id');
     }
 
+
     public function getPriceAttribute($value)
     {
         return $this->displayCurrencyUsing($value);

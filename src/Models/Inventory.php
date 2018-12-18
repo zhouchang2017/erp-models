@@ -6,6 +6,7 @@ namespace Chang\Erp\Models;
 use Chang\Erp\Contracts\Inventoriable;
 use Chang\Erp\Events\InventoryPut;
 use Chang\Erp\Events\InventoryTake;
+use Chang\Erp\Scopes\SupplierInventoryScope;
 
 class Inventory extends Model
 {
@@ -15,6 +16,13 @@ class Inventory extends Model
         'product_variant_id',
         'stock',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new SupplierInventoryScope());
+    }
+
 
     public function warehouse()
     {
@@ -65,11 +73,11 @@ class Inventory extends Model
                 $inventoryItem['product_variant_id']
             )->first();
 
-            return $inventory ?
-                $inventory->increment('stock', $inventoryItem['stock']) :
-                static::create($inventoryItem);
-        })->tap(function () use ($inventoryIncome) {
-//            event(new InventoryPut($inventoryIncome));
+            if ($inventory) {
+                $inventory->increment('stock', $inventoryItem['stock']);
+                return $inventory;
+            }
+            return static::create($inventoryItem);
         });
     }
 
@@ -104,5 +112,10 @@ class Inventory extends Model
                     $inventory->increment('stock', $item->pcs);
                 });
         });
+    }
+
+    public function scopeBySupplier($query,Supplier $supplier)
+    {
+        return $query->whereIn('product_id',$supplier->productIds);
     }
 }

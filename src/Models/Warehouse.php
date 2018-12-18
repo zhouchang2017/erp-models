@@ -7,6 +7,7 @@ use Chang\Erp\Contracts\Addressable;
 use Chang\Erp\Contracts\Expendable;
 use Chang\Erp\Traits\AddressableTrait;
 use Chang\Erp\Traits\ExpendableTrait;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Warehouse extends Model implements Addressable, Expendable
 {
@@ -25,8 +26,6 @@ class Warehouse extends Model implements Addressable, Expendable
         'enabled' => 'boolean',
         'has_verify' => 'boolean',
     ];
-
-    protected $appends = ['simple_address'];
 
     /**
      * 数据模型的启动方法
@@ -83,20 +82,18 @@ class Warehouse extends Model implements Addressable, Expendable
         });
     }
 
+    /**
+     * 仓库总所有商品
+     * @return BelongsToMany
+     */
     public function variants()
     {
-//        return $this->hasManyThrough(
-//            ProductVariant::class,
-//            Inventory::class,
-//            'warehouse_id',
-//            'id',
-//            'id',
-//            'product_variant_id'
-//        );
-        return $this->inventories()->with([
-            'supplier',
-            'variant',
-        ]);
+        $dbName = config('database.connections.' . config('database.default') . '.database');
+        return $this->belongsToMany(
+            ProductVariant::class,
+            $dbName . '.inventories'
+        )
+            ->withPivot('product_id','stock');
     }
 
     public function getVariantsAttribute()
@@ -108,4 +105,5 @@ class Warehouse extends Model implements Addressable, Expendable
     {
         // TODO: Implement getExpendItemList() method.
     }
+
 }

@@ -11,6 +11,10 @@ class InventoryExpendItemUnit extends Model
         'adjustments_total',
     ];
 
+    protected $with = ['shipment'];
+
+    public $timestamps = false;
+
     public function item()
     {
         return $this->belongsTo(InventoryExpendItem::class, 'item_id');

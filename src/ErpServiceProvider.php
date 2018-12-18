@@ -3,14 +3,18 @@
 namespace Chang\Erp;
 
 use Chang\Erp\Events\CompletedEvent;
+use Chang\Erp\Events\InventoryIncrementEvent;
 use Chang\Erp\Events\InventoryPut;
 use Chang\Erp\Events\InventoryTake;
 use Chang\Erp\Events\ShippedEvent;
 use Chang\Erp\Listeners\ChangeStatusToCompletedListener;
 use Chang\Erp\Listeners\ChangeStatusToShippedListener;
+use Chang\Erp\Listeners\ProductVariantStockListener;
 use Chang\Erp\Listeners\SendCompletedNotificationListener;
 use Chang\Erp\Listeners\SendShipmentNotificationListener;
+use Chang\Erp\Models\InventoryExpend;
 use Chang\Erp\Models\InventoryIncome;
+use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Spatie\MediaLibrary\Filesystem\Filesystem;
@@ -35,6 +39,9 @@ class ErpServiceProvider extends ServiceProvider
             ChangeStatusToCompletedListener::class,
             SendCompletedNotificationListener::class,
         ],
+        InventoryIncrementEvent::class=>[
+            ProductVariantStockListener::class
+        ]
     ];
 
 
@@ -44,6 +51,8 @@ class ErpServiceProvider extends ServiceProvider
         $this->registerRoutes();
         $this->registerNovaConfig();
         Route::model('inventoryIncome',InventoryIncome::class);
+        Route::model('inventoryExpend',InventoryExpend::class);
+        Resource::withoutWrapping();
     }
 
     public function register()

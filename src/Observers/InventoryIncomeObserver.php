@@ -9,13 +9,14 @@
 namespace Chang\Erp\Observers;
 
 use Chang\Erp\Models\InventoryIncome;
+use Chang\Erp\Services\InventoryIncomeService;
 
 class InventoryIncomeObserver
 {
 
     public function created(InventoryIncome $income)
     {
-        $income->statusToSave();
+        (new InventoryIncomeService($income))->statusToSaved();
     }
 
 }

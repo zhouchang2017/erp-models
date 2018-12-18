@@ -3,6 +3,8 @@
 namespace Chang\Erp\Models;
 
 //use ProductProvider;
+use Chang\Erp\Observers\ProductVariantObserver;
+use Chang\Erp\Scopes\SupplierProductVariantScope;
 use Dimsav\Translatable\Translatable;
 use Illuminate\Support\Facades\App;
 
@@ -23,6 +25,12 @@ class ProductVariant extends Model
 
     public static $searchableColumns = ['id', 'code'];
 
+    protected $appends = ['variantName'];
+
+    protected $with = ['price'];
+
+    protected $hidden = ['position', 'shipping_category_id', 'sold'];
+
     protected $fillable = [
         'product_id',
         'code',
@@ -34,6 +42,23 @@ class ProductVariant extends Model
         'stock',
         'shipping_category_id',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new SupplierProductVariantScope());
+        self::observe(ProductVariantObserver::class);
+    }
+
+    public function getVariantNameAttribute()
+    {
+        return $this->supplierVariant->name;
+    }
+
+    public function getName()
+    {
+        return optional($this->product)->name . '-' . implode('-', $this->optionValues->map->name->toArray());
+    }
 
 
     public function product()
@@ -47,14 +72,25 @@ class ProductVariant extends Model
     }
 
 
+    public function optionValuesGroupByOptionId()
+    {
+        return optional($this->optionValues, function ($optionValues) {
+            return $optionValues->groupBy('option_id');
+        });
+    }
+
+
     public function prices()
     {
         return $this->hasMany(ProductVariantPrice::class, 'variant_id');
     }
 
+    /**
+     * 供应商定价
+     */
     public function price()
     {
-        return $this->hasOne(ProductPrice::class, 'variant_id', 'id');
+        return $this->hasOne(ProductPrice::class, 'variant_id', 'id')->latest();
     }
 
 
@@ -93,13 +129,13 @@ class ProductVariant extends Model
         return $this->price()->count() > 0;
     }
 
-    public static function search($search)
-    {
-        return static::whereHas('translations', function ($query) use ($search) {
-            $query->where('locale_code', App::getLocale())
-                ->where('name', 'like', '%' . $search . '%');
-        });
-    }
+//    public static function search($search)
+//    {
+//        return static::whereHas('translations', function ($query) use ($search) {
+//            $query->where('locale_code', App::getLocale())
+//                ->where('name', 'like', '%' . $search . '%');
+//        });
+//    }
 
     public function scopeSearch($query, $search)
     {
@@ -123,6 +159,11 @@ class ProductVariant extends Model
                 $query->orWhere($model->qualifyColumn($column), $likeOperator, '%' . $search . '%');
             }
         });
+    }
+
+    protected function incrementStock($pcs)
+    {
+        $this->increment('stock', $pcs);
     }
 
 }

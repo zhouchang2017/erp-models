@@ -17,4 +17,7 @@ interface Trackable
     // 是否发货
     public function isShipped(): bool;
 
+    // 最小发货单元
+    public function units();
+
 }

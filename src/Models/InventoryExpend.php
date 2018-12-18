@@ -24,26 +24,23 @@ class InventoryExpend extends Model implements Trackable, Commentable
         UpdateInventoryTrait,
         HasStatuses;
 
-    const UN_COMMIT = 'UN_COMMIT'; //未提交
-    const PADDING = 'PADDING';  //待审核
-    const UN_SHIP = 'UN_SHIP';  //代发货
+    const UN_COMMIT = 'UN_COMMIT'; //未提交(保存)
+    const PENDING = 'PENDING';  //待审核(提交审核)
+    const UN_SHIP = 'UN_SHIP';  //待发货
+    const PART_SHIPPED = 'PART_SHIPPED';  //部分发货
     const SHIPPED = 'SHIPPED';  //已发货
     const COMPLETED = 'COMPLETED'; //已完成
-    const CANCEL = 'CANCEL'; // 取消
+    const CANCEL = 'CANCEL'; //取消
 
     protected $fillable = [
         'description',
         'pcs',
         'price',
-        'status',
         'warehouse_id',
         'has_shipment',
     ];
 
     protected $casts = [
-        'confirmed_at' => 'datetime',
-        'shipped_at' => 'datetime',
-        'completed_at' => 'datetime',
         'has_shipment' => 'boolean',
     ];
 
@@ -58,12 +55,34 @@ class InventoryExpend extends Model implements Trackable, Commentable
     {
         return [
             self::UN_COMMIT => '保存',
-            self::PADDING => '提交',
+            self::PENDING => '提交',
             self::UN_SHIP => '等待发货',
             self::SHIPPED => '已发货',
             self::COMPLETED => '已完成',
             self::CANCEL => '取消',
         ];
+    }
+
+    public static function canToReviewValue()
+    {
+        return self::UN_COMMIT;
+    }
+
+    public static function statusStepOptions()
+    {
+        return [
+            ['title' => '未提交', 'description' => '请完善退仓信息', 'value' => self::UN_COMMIT],
+            ['title' => '审核中', 'description' => '等待工作人员审核您的退仓申请', 'value' => self::PENDING],
+            ['title' => '等待发货', 'description' => '审核已通过，等待平台发货', 'value' => self::UN_SHIP],
+            ['title' => '部分发货', 'description' => '部分商品已发货', 'value' => self::PART_SHIPPED],
+            ['title' => '全部发货', 'description' => '发货已完成', 'value' => self::SHIPPED],
+            ['title' => '已完成', 'description' => '退仓已完成', 'value' => self::COMPLETED],
+        ];
+    }
+
+    public static function failOption()
+    {
+        return ['title' => '已取消', 'description' => '退仓申请已取消', 'value' => self::CANCEL];
     }
 
     /*
@@ -109,6 +128,19 @@ class InventoryExpend extends Model implements Trackable, Commentable
             // 初始化状态
             $instance->statusToSave();
         });
+    }
+
+    /*
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     * */
+    public function units()
+    {
+        return $this->hasManyThrough(
+            InventoryExpendItemUnit::class,
+            InventoryExpendItem::class,
+            'inventory_expend_id',
+            'item_id'
+        );
     }
 
 }

@@ -43,4 +43,14 @@ class SupplierUser extends Authenticatable
         return $this->belongsTo(Supplier::class);
     }
 
+    public function products()
+    {
+        return $this->supplier->products;
+    }
+
+    public function variants()
+    {
+        return $this->supplier->variants;
+    }
+
 }

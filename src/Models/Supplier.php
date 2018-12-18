@@ -2,9 +2,13 @@
 
 namespace Chang\Erp\Models;
 
+use Chang\Erp\Contracts\Expendable;
+use Chang\Erp\Contracts\Incomeable;
 use Chang\Erp\Traits\AddressableTrait;
+use Chang\Erp\Traits\ExpendableTrait;
 use Chang\Erp\Traits\IncomeableTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 
@@ -13,9 +17,9 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
  * @property mixed admin
  * @package Chang\Erp\Models
  */
-class Supplier extends Model implements HasMedia
+class Supplier extends Model implements HasMedia, Incomeable
 {
-    use AddressableTrait, HasMediaTrait,IncomeableTrait;
+    use AddressableTrait, HasMediaTrait, IncomeableTrait;
 
     /**
      * @var string
@@ -80,12 +84,31 @@ class Supplier extends Model implements HasMedia
     }
 
     /**
-     * 供应商产品
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * 供应商变体
      */
     public function variants()
     {
-        return $this->hasMany(SupplierVariant::class, 'supplier_id');
+        $dbName = config('database.connections.' . config('database.default') . '.database');
+        return $this->belongsToMany(ProductVariant::class, $dbName . '.supplier_variants')
+            ->withPivot('name');
+    }
+
+
+    public function products()
+    {
+        $dbName = config('database.connections.' . config('database.default') . '.database');
+        return $this->belongsToMany(Product::class, $dbName . '.supplier_product');
+    }
+
+
+    public function getProductIdsAttribute()
+    {
+        return DB::table('supplier_product')->where('supplier_id', $this->id)->pluck('product_id');
+    }
+
+    public function getVariantIdsAttribute()
+    {
+        return DB::table('supplier_variants')->where('supplier_id', $this->id)->pluck('product_variant_id');
     }
 
     /**

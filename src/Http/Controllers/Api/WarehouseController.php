@@ -12,8 +12,8 @@ use Illuminate\Pagination\Paginator;
 
 class WarehouseController extends Controller
 {
-    public function variants($id, Request $request)
+    public function variants(Warehouse $warehouse,Request $request)
     {
-        return Warehouse::findOrFail($id)->variants()->paginate($request->input('perPage', 15));
+        return $warehouse->variants()->search($request->search)->latest()->paginate();
     }
 }

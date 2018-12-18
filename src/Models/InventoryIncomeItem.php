@@ -12,9 +12,9 @@ use Chang\Erp\Traits\TrackableTrait;
  * @property mixed id
  * @property mixed pcs
  */
-class InventoryIncomeItem extends Model implements Trackable
+class InventoryIncomeItem extends Model
 {
-    use MoneyFormatableTrait, TrackableTrait;
+    use MoneyFormatableTrait;
 
     protected $connection = 'mysql';
 
@@ -61,5 +61,11 @@ class InventoryIncomeItem extends Model implements Trackable
         return $this->units()->createMany(
             array_fill(0, $this->pcs, $attribute)
         );
+    }
+
+    public function tracks()
+    {
+        return $this->belongsToMany(ShipmentTrack::class, 'inventory_income_item_units', 'item_id',
+            'shipment_track_id');
     }
 }

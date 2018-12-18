@@ -11,6 +11,7 @@ namespace Chang\Erp\Services;
 use Chang\Erp\Contracts\Trackable;
 use Chang\Erp\Events\CompletedEvent;
 use Chang\Erp\Events\ShippedEvent;
+use Chang\Erp\Models\InventoryIncome;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -24,6 +25,31 @@ class ShipmentService
     public function __construct(Trackable $model)
     {
         $this->model = $model;
+    }
+
+    /**
+     * @param Request $request
+     * @return Collection
+     */
+    public function trackableShipment(Request $request)
+    {
+        return collect($request->all())->map(function ($item){
+            $item['units'] = collect(array_get($item, 'units', []))->map(function ($unit){
+                $shipment = array_except(array_get($unit, 'shipment'), 'id');
+
+                $track = $this->model->tracks()->updateOrCreate($shipment, $shipment);
+
+                tap($this->model->units()->getModel()::find($unit['id']), function ($itemUnit) use ($track) {
+                    $itemUnit->shipment()->associate($track);
+                    $itemUnit->save();
+                });
+
+                $unit['shipment'] = $track;
+                $unit['shipment_track_id'] = $track['id'];
+                return $unit;
+            });
+            return $item;
+        });
     }
 
     protected function fillAttributeFromRequest(Request $request)
@@ -56,7 +82,7 @@ class ShipmentService
     // 发货操作
     public function shipment(Request $request)
     {
-        return DB::transaction(function ()use($request) {
+        return DB::transaction(function () use ($request) {
             $this->model->beforeShipped();
             $this->fillAttributeFromRequest($request);
             if ( !$this->model->isShipped() && !$this->model->has_shipment || $this->model->hasTracks()) {
