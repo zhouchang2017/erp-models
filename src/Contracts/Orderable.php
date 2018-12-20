@@ -31,7 +31,7 @@ interface Orderable
     // 子订单
     public function items();
 
-    // order
+    // 总order关联材料
     public function order();
 
     // 同步至订单库

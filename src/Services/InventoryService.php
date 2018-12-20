@@ -233,7 +233,7 @@ class InventoryService
                     $item->pluck('product_variant_id')->each(function ($id) use (&$message) {
                         $message = $message . '变体id[' . $id . ']库存不足 ';
                     });
-                    throw new InventoryOverflowException($message);
+                    throw new \Exception($message);
                 }
             });
         });

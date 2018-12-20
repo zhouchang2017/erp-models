@@ -29,10 +29,6 @@ class ProductAttribute extends Model
 
     public function taxon()
     {
-        return $this->belongsToMany(
-            ProductAttribute::class,
-            'taxon_attribute',
-            'attribute_id',
-            'taxon_id');
+        return $this->belongsTo(Taxon::class);
     }
 }

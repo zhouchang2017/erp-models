@@ -65,6 +65,8 @@ Route::get('/promotions/{promotion}', 'PromotionController@show');
 // 供应商提交产品审核
 Route::put('/products/{product}/review', 'ProductController@review');
 
+Route::any('/products/{product}/approved', 'ProductController@approved');
+
 Route::get('/product-attributes', 'ProductAttributeController@index')->name('product.attribute.index');
 
 Route::get('/product-options', 'ProductOptionController@index')->name('product.option.index');

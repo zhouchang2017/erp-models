@@ -6,6 +6,7 @@ namespace Chang\Erp\Models;
 use Chang\Erp\Observers\ProductVariantObserver;
 use Chang\Erp\Scopes\SupplierProductVariantScope;
 use Dimsav\Translatable\Translatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 
 /**
@@ -50,9 +51,10 @@ class ProductVariant extends Model
         self::observe(ProductVariantObserver::class);
     }
 
+
     public function getVariantNameAttribute()
     {
-        return $this->supplierVariant->name;
+        return optional($this->supplierVariant)->name;
     }
 
     public function getName()

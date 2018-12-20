@@ -36,6 +36,8 @@ trait ProductCheckStatus
     public function statusToApproved()
     {
         $this->setCheckStatus(self::APPROVED);
+        // TODO update supplier_variants hidden field!
+        $this->variants->map->supplierVariant->each->updateHiddenField(0);
     }
 
     public function statusToRejected()

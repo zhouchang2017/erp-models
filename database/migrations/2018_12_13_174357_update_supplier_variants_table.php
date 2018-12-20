@@ -15,6 +15,7 @@ class UpdateSupplierVariantsTable extends Migration
     {
         Schema::table('supplier_variants', function (Blueprint $table) {
             $table->string('name')->nullable()->comment('冗余变体名');
+            $table->boolean('hidden')->default(true)->comment('是否显示');
         });
     }
 
@@ -26,7 +27,7 @@ class UpdateSupplierVariantsTable extends Migration
     public function down()
     {
         Schema::table('supplier_variants', function (Blueprint $table) {
-            $table->dropColumn(['name']);
+            $table->dropColumn(['name','hidden']);
         });
     }
 }

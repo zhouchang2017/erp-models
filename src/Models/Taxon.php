@@ -10,7 +10,7 @@ use Kalnoy\Nestedset\NodeTrait;
 
 class Taxon extends Model
 {
-    use Translatable,NodeTrait,SoftDeletes;
+    use Translatable, NodeTrait, SoftDeletes;
 
     protected $connection = 'dealpaw';
 
@@ -41,7 +41,14 @@ class Taxon extends Model
 
 
     protected $fillable = [
-        'code', 'parent_id', 'position', 'tree_root', 'image', 'tree_level', 'tree_left', 'tree_right'
+        'code',
+        'parent_id',
+        'position',
+        'tree_root',
+        'image',
+        'tree_level',
+        'tree_left',
+        'tree_right',
     ];
 
     /**
@@ -88,8 +95,18 @@ class Taxon extends Model
     /**
      * {@inheritdoc}
      */
-    public function newCollection(array $models = array())
+    public function newCollection(array $models = [])
     {
         return new NodeCollection($models);
+    }
+
+    public function productAttributes()
+    {
+        return $this->hasMany(ProductAttribute::class);
+    }
+
+    public function productOptions()
+    {
+        return $this->hasMany(ProductOption::class);
     }
 }

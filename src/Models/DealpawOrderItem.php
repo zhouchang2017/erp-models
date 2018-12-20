@@ -17,19 +17,34 @@ class DealpawOrderItem extends Model
         'option_values' => 'array',
     ];
 
+    // dealpaw 订单
     public function order()
     {
         return $this->belongsTo(DealpawOrder::class, 'order_id');
     }
 
+    // 关联变体
     public function variant()
     {
         return $this->belongsTo(ProductVariant::class, 'variant_id');
     }
 
+    // 关联产品
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id');
+    }
+
+    // 关联调整
+    public function adjustments()
+    {
+        return $this->hasMany(Adjustment::class);
+    }
+
+    // 最小单元
+    public function units()
+    {
+        return $this->hasMany(DealpawOrderItemUnit::class, 'item_id');
     }
 
     public function getUnitsTotalAttribute($value)
@@ -37,28 +52,16 @@ class DealpawOrderItem extends Model
         return $this->displayCurrencyUsing($value);
     }
 
-    public function setUnitsTotalAttribute($value)
-    {
-        $this->attributes['units_total'] = $this->saveCurrencyUsing($value === 0 ? '0.00' : $value);
-    }
 
     public function getTotalAttribute($value)
     {
         return $this->displayCurrencyUsing($value);
     }
 
-    public function setTotalAttribute($value)
-    {
-        $this->attributes['total'] = $this->saveCurrencyUsing($value === 0 ? '0.00' : $value);
-    }
 
     public function getUnitPriceAttribute($value)
     {
         return $this->displayCurrencyUsing($value);
     }
 
-    public function setUnitPriceAttribute($value)
-    {
-        $this->attributes['unit_price'] = $this->saveCurrencyUsing($value === 0 ? '0.00' : $value);
-    }
 }

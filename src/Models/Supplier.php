@@ -22,11 +22,6 @@ class Supplier extends Model implements HasMedia, Incomeable
     use AddressableTrait, HasMediaTrait, IncomeableTrait;
 
     /**
-     * @var string
-     */
-    protected $connection = 'mysql';
-
-    /**
      * @var array
      */
     protected $fillable = [
@@ -88,9 +83,14 @@ class Supplier extends Model implements HasMedia, Incomeable
      */
     public function variants()
     {
-        $dbName = config('database.connections.' . config('database.default') . '.database');
-        return $this->belongsToMany(ProductVariant::class, $dbName . '.supplier_variants')
-            ->withPivot('name');
+//        $database = $this->getConnection()->getDatabaseName();
+//        $dbName = config('database.connections.' . $database . '.database');
+//        return $this->belongsToMany(ProductVariant::class, $dbName . '.supplier_variants')
+//            ->withPivot('name')->wherePivot('hidden', 0);
+
+        $database = $this->getConnection()->getDatabaseName();
+        return $this->belongsToMany(ProductVariant::class,$database . '.supplier_variants')->using(SupplierVariant::class)
+            ->withPivot('name')->wherePivot('hidden', 0);
     }
 
 

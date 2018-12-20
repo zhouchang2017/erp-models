@@ -25,45 +25,63 @@ class DealpawOrder extends Model implements Orderable
         'fulfilled_at' => 'datetime',
     ];
 
+    // 订单地址
     public function address()
     {
         return $this->belongsTo(DealpawAddress::class, 'address_id');
     }
 
+    // 关联DP
     public function dealpaw()
     {
         return $this->belongsTo(Dealpaw::class, 'channel_id');
     }
 
+    // 订单单元
     public function items()
     {
         return $this->hasMany(DealpawOrderItem::class, 'order_id');
     }
 
+    // 优惠调整
     public function adjustments()
     {
         return $this->hasMany(Adjustment::class, 'order_id');
     }
+
+    // 远程关联最小单元
+    public function units()
+    {
+        return $this->hasManyThrough(
+            DealpawOrderItemUnit::class,
+            DealpawOrderItem::class,
+            'order_id',
+            'item_id'
+        );
+    }
+
+    // 订单单元价格调整
+    public function itemsAdjustments()
+    {
+        return $this->hasManyThrough(
+            Adjustment::class,
+            DealpawOrderItem::class
+        );
+    }
+    
+    
 
     public function getItemsTotalAttribute($value)
     {
         return $this->displayCurrencyUsing($value);
     }
 
-    public function setItemsTotalAttribute($value)
-    {
-        $this->attributes['items_total'] = $this->saveCurrencyUsing($value === 0 ? '0.00' : $value);
-    }
 
     public function getTotalAttribute($value)
     {
         return $this->displayCurrencyUsing($value);
     }
 
-    public function setTotalAttribute($value)
-    {
-        $this->attributes['total'] = $this->saveCurrencyUsing($value === 0 ? '0.00' : $value);
-    }
 
     // 实现orderable
 

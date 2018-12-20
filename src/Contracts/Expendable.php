@@ -13,8 +13,10 @@ use Chang\Erp\Models\ExpendItems;
 
 interface Expendable
 {
+    // 关联出库
     public function inventoryExpends();
 
+    // 关联出库
     public function inventoryExpend();
 
     // 获取即将出货的列表
