@@ -28,7 +28,7 @@ class InventoryService
 {
 
     /**
-     * 出库
+     * 出库，减库存
      * @param InventoryExpend $inventoryExpend
      * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
      */
@@ -100,7 +100,7 @@ class InventoryService
     }
 
     /**
-     * 产生出货记录
+     * 产生出货记录,适用于订单出库
      * @param Expendable $expendable
      * @return mixed
      */
@@ -142,7 +142,7 @@ class InventoryService
     }
 
     /**
-     * 储存出货记录
+     * 创建/更新出货记录
      * @param Expendable $expendable
      * @param ExpendItems $assignment
      * @return mixed
@@ -178,7 +178,7 @@ class InventoryService
             });
 
             return tap($inventoryExpend, function (InventoryExpend $inventoryExpend) {
-                $inventoryExpend->statusToApproved();
+                (new InventoryExpendService($inventoryExpend))->statusToApproved('订单，系统自动审核');
             });
         })->flatten();
     }
@@ -189,11 +189,13 @@ class InventoryService
      * @param Expendable $expendable
      * @return mixed
      */
-    protected function assignmentWarehouse(Expendable $expendable)
+    public function assignmentWarehouse(Expendable $expendable)
     {
         // 查出所有变体数量 items
         return $expendable->getExpendItemList()->map(function ($item) {
-            $item->warehouse_ids = Warehouse::findVariant($item->product_variant_id, $item->pcs)->pluck('warehouse_id');
+            $stocks = Warehouse::findVariant($item->product_variant_id, $item->pcs);
+            $item->put('inventories',$stocks);
+            $item->put('warehouse_ids',$stocks->pluck('warehouse_id'));
             return $item;
         })->tap(function ($item) {
             $all = $item->pluck('warehouse_ids');
@@ -211,7 +213,7 @@ class InventoryService
                 return $res;
             }, collect([]))->tap(function ($recommend) use ($item) {
                 $item->each(function ($item, $key) use ($recommend) {
-                    $item->warehouse_id = $recommend[$key];
+                    $item->put('warehouse_id',$recommend[$key]);
                 });
             });
         });
@@ -226,7 +228,7 @@ class InventoryService
     {
         return tap($this->assignmentWarehouse($expendable), function ($assignment) {
             $assignment->filter(function ($item) {
-                return is_null($item->warehouse_id);
+                return is_null($item->get('warehouse_id'));
             })->tap(function ($item) {
                 if ($item->count() > 0) {
                     $message = '';

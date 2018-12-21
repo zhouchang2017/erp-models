@@ -24,4 +24,10 @@ class OrderController extends Controller
         $this->service->syncAll();
         return response()->json(['message' => '同步完成'], 201);
     }
+
+    public function createByDp($id)
+    {
+        $this->service->createByDp($id);
+        return response()->json(['message' => '同步订单成功！'], 201);
+    }
 }

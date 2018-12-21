@@ -25,6 +25,11 @@ class DealpawOrder extends Model implements Orderable
         'fulfilled_at' => 'datetime',
     ];
 
+    public function scopeFilterCheckout($query)
+    {
+        return $query->where('state', '!=', 'checkout');
+    }
+
     // 订单地址
     public function address()
     {
@@ -68,8 +73,7 @@ class DealpawOrder extends Model implements Orderable
             DealpawOrderItem::class
         );
     }
-    
-    
+
 
     public function getItemsTotalAttribute($value)
     {
@@ -131,5 +135,18 @@ class DealpawOrder extends Model implements Orderable
                 ];
             });
         return new ExpendItems($data);
+    }
+
+
+    public static function syncAll()
+    {
+        return static::filterCheckout()->get()->map(function (Orderable $orderable) {
+            return $orderable->sync();
+        });
+    }
+
+    public function syncFilter()
+    {
+        return $this->state !== 'checkout';
     }
 }

@@ -48,6 +48,7 @@ class InventoryAbleResource extends JsonResource
                 'name' => $this->warehouse->name,
                 'simple_address' => $this->warehouse->simple_address,
             ],
+            'status'=>$this->status
         ];
     }
 
@@ -69,6 +70,7 @@ class InventoryAbleResource extends JsonResource
                 'name' => $this->expendable->name,
                 'simple_address' => $this->expendable->simple_address,
             ],
+            'status'=>$this->status
         ];
     }
 }

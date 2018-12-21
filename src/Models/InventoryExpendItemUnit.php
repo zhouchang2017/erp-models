@@ -2,9 +2,12 @@
 
 namespace Chang\Erp\Models;
 
+use Chang\Erp\Traits\AttachmentableTrait;
 
 class InventoryExpendItemUnit extends Model
 {
+    use AttachmentableTrait;
+
     protected $fillable = [
         'item_id',
         'shipment_track_id',

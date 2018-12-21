@@ -10,6 +10,7 @@ namespace Chang\Erp\Traits;
 
 
 use Chang\Erp\Contracts\Orderable;
+use Chang\Erp\Events\NewOrderEvent;
 use Chang\Erp\Models\Order;
 
 trait OrderableTrait
@@ -45,16 +46,24 @@ trait OrderableTrait
         return static::findOrFail($orderId)->sync();
     }
 
+    public function syncFilter()
+    {
+        return true;
+    }
+
     public function sync()
     {
-        if (is_null($this->order)) {
-            // 创建
-            return $this->order()->create($this->register());
+        if ($this->syncFilter()) {
+            if (is_null($this->order)) {
+                // 创建
+                return $this->order()->create($this->register());
+            }
+            // 更新
+            return tap($this->order, function ($order) {
+                $order->update($this->register());
+            });
         }
-        // 更新
-        return tap($this->order, function ($order) {
-            $order->update($this->register());
-        });
+        throw new \Exception('订单状态不符合规则');
     }
 
     public static function syncAll()

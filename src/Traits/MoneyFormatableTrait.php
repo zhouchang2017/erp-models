@@ -70,6 +70,38 @@ trait MoneyFormatableTrait
         return $money->getAmount();
     }
 
+    public function hasSetMoneyMutator($key)
+    {
+        return $key === $this->priceField;
+    }
+
+    public function setAttribute($key, $value)
+    {
+        if ($this->hasSetMoneyMutator($key)) {
+            return  $this->attributes[$this->priceField] = $this->saveCurrencyUsing($value === 0 ? '0.00' : $value);
+
+        }
+
+        return parent::setAttribute($key, $value);
+    }
+
+    public function hasGetMutator($key)
+    {
+        if ($key === $this->priceField) {
+            return true;
+        }
+        return parent::hasGetMutator($key);
+    }
+
+    protected function mutateAttribute($key, $value)
+    {
+        if ($key === $this->priceField) {
+            return $this->displayCurrencyUsing($value);
+        }
+        return parent::mutateAttribute($key, $value);
+    }
+
+
     public function getPriceAttribute($value)
     {
         return $this->displayCurrencyUsing($value);

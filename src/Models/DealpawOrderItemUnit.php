@@ -2,7 +2,6 @@
 
 namespace Chang\Erp\Models;
 
-
 class DealpawOrderItemUnit extends Model
 {
     protected $connection = 'dealpaw';

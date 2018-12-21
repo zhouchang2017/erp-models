@@ -68,7 +68,8 @@ class InventoryIncomeController extends Controller
     {
         $res = $this->service->model($income)->put();
         return response()->json([
-            'data' => $res,
+            //'data' => $res,
+            'status' => $income->refresh()->status,
             'title' => '入库成功',
             'message' => '入库成功！',
             'type' => 'success',

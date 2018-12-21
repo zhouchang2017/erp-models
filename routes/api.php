@@ -72,3 +72,14 @@ Route::get('/product-attributes', 'ProductAttributeController@index')->name('pro
 Route::get('/product-options', 'ProductOptionController@index')->name('product.option.index');
 
 Route::post('/locales/{locale}', 'LocaleController@set')->name('locale.set');
+
+/*
+|--------------------------------------------------------------------------
+| 订单API
+|--------------------------------------------------------------------------
+|
+| Orders
+|
+*/
+// 创建dp订单
+Route::post('/orders/dp/{id}','OrderController@createByDp')->name('order.dp.create')->where('dp', '[0-9]+');

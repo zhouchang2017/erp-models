@@ -5,6 +5,7 @@ namespace Chang\Erp\Models;
 use App\Exceptions\InventoryOverflowException;
 use Chang\Erp\Contracts\Expendable;
 use Chang\Erp\Contracts\Orderable;
+use Chang\Erp\Observers\OrderObserver;
 use Chang\Erp\Traits\ExpendableTrait;
 use Chang\Erp\Traits\MoneyFormatableTrait;
 use Illuminate\Support\Collection;
@@ -45,6 +46,13 @@ class Order extends Model implements Expendable
         DealpawOrder::class,
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::observe(OrderObserver::class);
+    }
+
+
     public function orderable()
     {
         return $this->morphTo();
@@ -73,25 +81,11 @@ class Order extends Model implements Expendable
         return $this->orderable->address();
     }
 
-    /**
-     * 取消出货单
-     * @return mixed
-     */
-    public function cancelExpend()
-    {
-        return $this->inventoryExpends->map->statusToCancel();
-    }
 
-    /*
-     * 重置出货单
-     * */
-    public function reExpend()
-    {
-        $this->inventoryExpends->map->reExpend();
-    }
-
+    // 订单子项目
     public function getExpendItemList(): ExpendItems
     {
         return $this->orderable->getExpendItemList();
     }
+
 }

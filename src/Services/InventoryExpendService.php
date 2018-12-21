@@ -51,6 +51,7 @@ class InventoryExpendService
     {
         $this->model->statusToPadding();
         InventoryService::take($this->model);
+        $this->createItemUnits();
         // 锁库存！
         activity()
             ->causedBy(auth()->user())
@@ -59,14 +60,14 @@ class InventoryExpendService
         event(new InventoryExpendPendingEvent($this->model));
     }
 
-    public function statusToApproved()
+    public function statusToApproved($reason = '同意出库,等待发货')
     {
-        $this->model->statusToApproved();
+        $this->model->statusToApproved($reason);
         $this->createItemUnits();
         activity()
             ->causedBy(auth()->user())
             ->performedOn($this->model)
-            ->log('退仓申请，审核成功');
+            ->log($reason);
         event(new InventoryExpendApprovedEvent($this->model));
     }
 

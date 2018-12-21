@@ -105,31 +105,6 @@ class InventoryExpend extends Model implements Trackable, Commentable
     }
 
 
-    // 出货清单审核通过后置操作
-    protected function afterConfirmed()
-    {
-        Inventory::take($this);
-    }
-
-    // 出货单取消前置钩子
-    protected function beforeCancel()
-    {
-        // 当前出货单状态为审核通过之后状态，取消则，返仓
-        if ((int)$this->attributes['status'] >= self::UN_SHIP) {
-            Inventory::rollback($this);
-        }
-    }
-
-    public function reExpend()
-    {
-        return tap($this, function (self $instance) {
-            // 重置出库
-            $instance->beforeCancel();
-            // 初始化状态
-            $instance->statusToSave();
-        });
-    }
-
     /*
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      * */
