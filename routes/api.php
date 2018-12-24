@@ -83,3 +83,9 @@ Route::post('/locales/{locale}', 'LocaleController@set')->name('locale.set');
 */
 // 创建dp订单
 Route::post('/orders/dp/{id}','OrderController@createByDp')->name('order.dp.create')->where('dp', '[0-9]+');
+// 订单详情
+Route::get('/orders/{order}','OrderController@show')->name('order.show')->where('order', '[0-9]+');
+// 获取分配库存
+Route::get('/orders/{order}/assignment','OrderController@assignmentWarehouse')->name('order.assignment')->where('order', '[0-9]+');
+// 创建出货单
+Route::post('/orders/{order}/assignment','OrderController@storeExpend')->name('order.assignment')->where('order', '[0-9]+');

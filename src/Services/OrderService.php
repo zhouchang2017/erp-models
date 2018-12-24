@@ -17,6 +17,7 @@ use Chang\Erp\Models\ExpendItems;
 use Chang\Erp\Models\InventoryExpend;
 use Chang\Erp\Models\Order;
 use Chang\Erp\Models\Warehouse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
@@ -26,6 +27,19 @@ class OrderService
     public function __construct(Order $order)
     {
         $this->order = $order;
+    }
+
+    public function model(Order $order)
+    {
+        $this->order = $order;
+        return $this;
+    }
+
+    public function show(Order $order)
+    {
+        $this->order = $order;
+        $this->order->loadMissing(['orderable.items.variant','market.marketable'])->append('simple_address');
+        return $this->order;
     }
 
     // 同步全部订单
@@ -40,29 +54,32 @@ class OrderService
     public function createByDp($id)
     {
         $this->order = DealpawOrder::syncOrder($id);
-        return $this->preTake();
+        return $this->order;
     }
 
     // 预备出库
-    public function preTake()
+    public function createExpends(Request $request)
     {
         // 创建出库记录
-        return tap(InventoryService::expend($this->order),function(){
-            // 🔐库存 直接 ProductVariant->stock 减少
-            $this->order->getExpendItemList()->each->lock();
-        });
+        return InventoryExpendService::create($this->order);
     }
 
     // 出库
-    public function take()
+    public function take(Request $request)
     {
 
     }
 
     // 发货
-    public function shipment()
+    public function shipment(Request $request)
     {
+        // 为InventoryExpendItemUnit 创建 Shipment 物流
+        $inventoryExpendService = new InventoryExpendService($this->order->inventoryExpend);
+        $inventoryExpendService->shipment($request);
+        // 为InventoryExpendItemUnit 创建 Attachment 附加费用(包装材料费\人工费....)
 
+        // 减少库存
+        $this->take($request);
     }
 
     // 关闭订单

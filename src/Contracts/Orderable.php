@@ -49,4 +49,7 @@ interface Orderable
     // 获取产生出货单参数列表
     public function getExpendItemList(): ExpendItems;
 
+    // 订单简单地址
+    public function getSimpleAddressAttribute(): string;
+
 }

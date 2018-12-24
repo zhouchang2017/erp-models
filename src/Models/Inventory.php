@@ -7,7 +7,12 @@ use Chang\Erp\Contracts\Inventoriable;
 use Chang\Erp\Events\InventoryPut;
 use Chang\Erp\Events\InventoryTake;
 use Chang\Erp\Scopes\SupplierInventoryScope;
-
+/*
+ * 库存模型
+ *
+ * 入库
+ * 出库
+ * */
 class Inventory extends Model
 {
     protected $fillable = [

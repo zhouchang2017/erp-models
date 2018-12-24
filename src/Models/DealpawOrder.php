@@ -36,6 +36,11 @@ class DealpawOrder extends Model implements Orderable
         return $this->belongsTo(DealpawAddress::class, 'address_id');
     }
 
+    public function getSimpleAddressAttribute():string
+    {
+        return $this->address->simple();
+    }
+
     // 关联DP
     public function dealpaw()
     {

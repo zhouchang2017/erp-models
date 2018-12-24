@@ -81,6 +81,11 @@ class Order extends Model implements Expendable
         return $this->orderable->address();
     }
 
+    public function getSimpleAddressAttribute()
+    {
+        return $this->orderable->simple_address;
+    }
+
 
     // 订单子项目
     public function getExpendItemList(): ExpendItems

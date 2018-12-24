@@ -12,6 +12,7 @@ use Illuminate\Support\Collection;
 
 /**
  * Class ExpendItem
+ * @property mixed product_variant_id
  * @package Chang\Erp\Models
  */
 class ExpendItem extends Collection

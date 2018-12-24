@@ -18,7 +18,7 @@ class DealpawAddress extends Model
         'province_name',
         'city',
         'street',
-        'user_id'
+        'user_id',
     ];
     public static $updateFillable = [
         'first_name',
@@ -34,11 +34,17 @@ class DealpawAddress extends Model
 
     public function order()
     {
-        return $this->hasOne(DealpawOrder::class,'address_id');
+        return $this->hasOne(DealpawOrder::class, 'address_id');
     }
 
     public function dealpaw()
     {
-        return $this->hasOne(Dealpaw::class,'channel_id');
+        return $this->hasOne(Dealpaw::class, 'channel_id');
+    }
+
+    public function simple()
+    {
+        return $this->country_code . ' ' . $this->province_name . ' ' . $this->city . ' ' . $this->street . ' '
+            . ' 收件人:' . $this->first_name . ' ' . $this->last_name . ' 手机:' . $this->phone_number . ' 邮编:' . $this->postcode;
     }
 }

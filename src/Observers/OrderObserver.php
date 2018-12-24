@@ -17,11 +17,16 @@ class OrderObserver
     public function created(Order $order)
     {
         // 锁定库存
+        $order->getExpendItemList()->each->lock();
     }
 
     // 订单更新
     public function updated(Order $order)
     {
-        info('订单更新' . $order->id);
+
+        if($order->order_status === Order::CANCEL){
+            info('订单关闭' . $order->id);
+            $order->getExpendItemList()->each->revert();
+        }
     }
 }

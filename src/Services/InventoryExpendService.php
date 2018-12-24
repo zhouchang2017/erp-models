@@ -9,20 +9,24 @@
 namespace Chang\Erp\Services;
 
 
+use Chang\Erp\Contracts\Expendable;
 use Chang\Erp\Events\InventoryExpendApprovedEvent;
 use Chang\Erp\Events\InventoryExpendCancelEvent;
 use Chang\Erp\Events\InventoryExpendCompletedEvent;
 use Chang\Erp\Events\InventoryExpendPartShippedEvent;
 use Chang\Erp\Events\InventoryExpendPendingEvent;
 use Chang\Erp\Events\InventoryExpendShippedEvent;
+use Chang\Erp\Models\ExpendItem;
+use Chang\Erp\Models\ExpendItems;
 use Chang\Erp\Models\InventoryExpend;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InventoryExpendService
 {
     protected $model;
 
-    public function __construct(InventoryExpend $expend)
+    public function __construct(InventoryExpend $expend = null)
     {
         $this->model = $expend;
     }
@@ -124,6 +128,54 @@ class InventoryExpendService
             });
         });
     }
+
+    public function createAttachment(Request $request)
+    {
+
+    }
+
+    /**
+     * 创建/更新出货记录,适用于订单出库
+     * @param Expendable $expendable
+     * @return mixed
+     */
+    public static function create(Expendable $expendable)
+    {
+        return DB::transaction(function ()use($expendable){
+            $description = $expendable->getDescription();
+            // 创建或更新出库记录
+            return $expendable->getExpendItemList()->groupBy('warehouse_id')->map(function (ExpendItems $items, $key) use (
+                $expendable,
+                $description
+            ) {
+
+                /** @var InventoryExpend $inventoryExpend */
+                $inventoryExpend = $expendable->inventoryExpend()->updateOrCreate([
+                    'expendable_type' => get_class($expendable),
+                    'expendable_id' => $expendable->id,
+                ], [
+                    'description' => $description,
+                    'warehouse_id' => $key,
+                ]);
+
+
+                $items->each(function (ExpendItem $item) use ($inventoryExpend) {
+                    $inventoryExpend->items()->updateOrCreate(
+                        [
+                            'inventory_expend_id' => $inventoryExpend->id,
+                            'product_variant_id' => $item->product_variant_id,
+                        ],
+                        $item->toArray()
+                    );
+                });
+
+                return tap($inventoryExpend, function (InventoryExpend $inventoryExpend) {
+                    (new static($inventoryExpend))->statusToApproved('订单，系统自动审核');
+                });
+            })->flatten();
+        });
+    }
+
 
     public function take()
     {

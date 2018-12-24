@@ -17,9 +17,9 @@ use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
  * @property mixed admin
  * @package Chang\Erp\Models
  */
-class Supplier extends Model implements HasMedia, Incomeable
+class Supplier extends Model implements HasMedia, Incomeable, Expendable
 {
-    use AddressableTrait, HasMediaTrait, IncomeableTrait;
+    use AddressableTrait, HasMediaTrait, IncomeableTrait, ExpendableTrait;
 
     /**
      * @var array
@@ -89,7 +89,8 @@ class Supplier extends Model implements HasMedia, Incomeable
 //            ->withPivot('name')->wherePivot('hidden', 0);
 
         $database = $this->getConnection()->getDatabaseName();
-        return $this->belongsToMany(ProductVariant::class,$database . '.supplier_variants')->using(SupplierVariant::class)
+        return $this->belongsToMany(ProductVariant::class,
+            $database . '.supplier_variants')->using(SupplierVariant::class)
             ->withPivot('name')->wherePivot('hidden', 0);
     }
 
@@ -127,5 +128,10 @@ class Supplier extends Model implements HasMedia, Incomeable
     public function warehouseAddress()
     {
         return $this->addressByCollection('warehouse');
+    }
+
+    public function getExpendItemList(): ExpendItems
+    {
+        // TODO: Implement getExpendItemList() method.
     }
 }

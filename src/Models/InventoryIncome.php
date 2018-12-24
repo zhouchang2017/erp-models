@@ -3,7 +3,6 @@
 namespace Chang\Erp\Models;
 
 
-// 入库
 use Chang\Erp\Contracts\Commentable;
 use Chang\Erp\Contracts\Trackable;
 use Chang\Erp\Observers\InventoryIncomeObserver;
@@ -12,11 +11,10 @@ use Chang\Erp\Traits\UpdateInventoryTrait;
 use Chang\Erp\Traits\MoneyFormatableTrait;
 use Chang\Erp\Traits\TrackableTrait;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\ModelStatus\HasStatuses;
 
 /**
+ * 入库行为
  * @property Collection items
  * @property Warehouse warehouse
  */
